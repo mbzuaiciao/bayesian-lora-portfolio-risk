@@ -4,6 +4,26 @@
 
 Establish whether Bayesian LoRA produces useful epistemic uncertainty on a timestamped financial-text prediction task before any portfolio optimizer is introduced.
 
+## Locked first task
+
+Use FNSPID financial news and stock-price histories to predict whether an asset experiences a material drawdown during the next 20 trading days.
+
+For asset i on date t:
+
+\[
+DD_{i,t}^{(20)} = \min_{1 \le k \le 20}\left(\frac{P_{i,t+k}}{P_{i,t}} - 1\right)
+\]
+
+and
+
+\[
+y_{i,t} = \mathbf{1}[DD_{i,t}^{(20)} \le -\delta].
+\]
+
+Start with \(\delta=10\%\). Any threshold adjustment must be based only on training-period class balance and documented before test evaluation.
+
+See `docs/dataset_and_task.md` for the full data contract.
+
 ## Experimental contract
 
 Hold constant:
@@ -20,15 +40,15 @@ Vary only the adaptation method:
 1. Standard LoRA.
 2. Bayesian LoRA.
 
-## Required datasets
+## Required splits
 
-Construct three splits:
+Construct three chronological splits:
 
 - Train: earlier period.
-- ID test: same broad regime/domain as training.
-- Shift test: later period or deliberately shifted document/domain regime.
+- ID validation/test: later observations still near the training distribution.
+- Shift test: a strictly later period or materially different market regime.
 
-All documents must respect point-in-time availability. No future text or future-derived features may enter an earlier example.
+All documents must respect point-in-time availability. No future text or future-derived features may enter an earlier example. Ambiguous same-day article timing is handled conservatively by assigning the text to the next trading-day information set.
 
 ## Required metrics
 
@@ -36,7 +56,7 @@ All documents must respect point-in-time availability. No future text or future-
 
 - Accuracy
 - F1
-- AUROC when appropriate
+- AUROC
 
 ### Probabilistic quality
 
