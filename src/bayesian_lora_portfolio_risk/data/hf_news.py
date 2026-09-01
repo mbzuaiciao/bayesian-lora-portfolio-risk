@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+import math
 
 import pandas as pd
 
@@ -22,6 +23,11 @@ def load_hf_fnspid_news_slice(
     a third-party Nasdaq-100-filtered derivative of FNSPID, not the canonical
     release. Final experiments should be validated against the official FNSPID
     source.
+
+    When ``max_rows`` is set together with an explicit ticker list, the cap is
+    distributed approximately evenly across requested tickers. This avoids a
+    streaming-order artifact in which the first ticker in the dataset consumes
+    the entire smoke-test budget.
     """
     if max_rows is not None and max_rows <= 0:
         raise ValueError("max_rows must be positive when provided")
@@ -31,7 +37,7 @@ def load_hf_fnspid_news_slice(
     except ImportError as exc:  # pragma: no cover - dependency error path
         raise RuntimeError("install project dependencies with `uv sync`") from exc
 
-    wanted = None
+    wanted: set[str] | None = None
     if tickers is not None:
         wanted = {str(ticker).strip().upper() for ticker in tickers if str(ticker).strip()}
         if not wanted:
@@ -42,12 +48,20 @@ def load_hf_fnspid_news_slice(
     if start_ts is not None and end_ts is not None and start_ts > end_ts:
         raise ValueError("start must not be after end")
 
+    per_ticker_cap: int | None = None
+    counts: dict[str, int] = {}
+    if max_rows is not None and wanted is not None:
+        per_ticker_cap = max(1, math.ceil(max_rows / len(wanted)))
+        counts = {ticker: 0 for ticker in wanted}
+
     dataset = load_dataset(repo_id, split=split, streaming=True)
     records: list[dict[str, object]] = []
 
     for row in dataset:
         ticker = str(row.get("Stock_symbol", "")).strip().upper()
         if not ticker or (wanted is not None and ticker not in wanted):
+            continue
+        if per_ticker_cap is not None and counts[ticker] >= per_ticker_cap:
             continue
 
         timestamp = pd.to_datetime(row.get("Date"), utc=True, errors="coerce")
@@ -75,9 +89,24 @@ def load_hf_fnspid_news_slice(
             continue
 
         records.append({"ticker": ticker, "timestamp": timestamp, "text": text})
-        if max_rows is not None and len(records) >= max_rows:
+        if per_ticker_cap is not None:
+            counts[ticker] += 1
+            if all(count >= per_ticker_cap for count in counts.values()):
+                break
+        elif max_rows is not None and len(records) >= max_rows:
             break
 
     if not records:
         return pd.DataFrame(columns=["ticker", "timestamp", "text"])
-    return pd.DataFrame.from_records(records)
+
+    frame = pd.DataFrame.from_records(records)
+    if max_rows is not None and len(frame) > max_rows:
+        # Preserve balance while respecting the exact global cap.
+        frame = (
+            frame.sort_values(["ticker", "timestamp"], kind="stable")
+            .groupby("ticker", group_keys=False, sort=True)
+            .head(per_ticker_cap if per_ticker_cap is not None else max_rows)
+            .head(max_rows)
+            .reset_index(drop=True)
+        )
+    return frame
