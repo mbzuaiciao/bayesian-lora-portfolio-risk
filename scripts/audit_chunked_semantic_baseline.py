@@ -2,8 +2,9 @@
 
 This script tests whether earlier semantic baselines underperformed because a
 single FinBERT window discarded most of the relevance-filtered document. Each
-asset-day document is tokenized into overlapping chunks, encoded independently,
-and mean pooled across chunks before fitting logistic-regression classifiers.
+asset-day document is tokenized into overlapping chunks, encoded in batches
+across documents, and mean pooled back to one embedding per document before
+fitting logistic-regression classifiers.
 
 Example:
     uv run python scripts/audit_chunked_semantic_baseline.py \
@@ -12,6 +13,7 @@ Example:
         --train-end 2021-12-31 \
         --test-start 2022-01-01 \
         --test-end 2022-12-31 \
+        --max-chunks 4 \
         --output artifacts/chunked_semantic_baseline_2022.json
 """
 
@@ -40,8 +42,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-name", default="ProsusAI/finbert")
     parser.add_argument("--chunk-tokens", type=int, default=384)
     parser.add_argument("--chunk-stride", type=int, default=64)
-    parser.add_argument("--max-chunks", type=int, default=8)
+    parser.add_argument("--max-chunks", type=int, default=4)
     parser.add_argument("--batch-size", type=int, default=16)
+    parser.add_argument("--progress-every", type=int, default=25)
     parser.add_argument(
         "--output",
         type=Path,
@@ -100,8 +103,6 @@ def _chunk_text(
     if cls_id is None or sep_id is None:
         raise ValueError("BERT-style tokenizer must expose cls_token_id and sep_token_id")
 
-    # Construct [CLS] content [SEP] directly. This avoids relying on optional
-    # tokenizer helper methods that are absent in some recent transformers builds.
     content_width = chunk_tokens - 2
     if content_width <= 0:
         raise ValueError("chunk-tokens is too small for BERT special tokens")
@@ -114,12 +115,7 @@ def _chunk_text(
     while start < len(token_ids) and len(chunks) < max_chunks:
         piece = token_ids[start : start + content_width]
         input_ids = [int(cls_id), *[int(token_id) for token_id in piece], int(sep_id)]
-        chunks.append(
-            {
-                "input_ids": input_ids,
-                "attention_mask": [1] * len(input_ids),
-            }
-        )
+        chunks.append({"input_ids": input_ids, "attention_mask": [1] * len(input_ids)})
         if start + content_width >= len(token_ids):
             break
         start += step
@@ -129,6 +125,7 @@ def _chunk_text(
 def _encode_documents(
     texts: list[str],
     *,
+    split_name: str,
     tokenizer: object,
     model: torch.nn.Module,
     device: torch.device,
@@ -136,12 +133,15 @@ def _encode_documents(
     stride: int,
     max_chunks: int,
     batch_size: int,
+    progress_every: int,
 ) -> tuple[np.ndarray, list[int]]:
-    all_embeddings: list[np.ndarray] = []
+    """Encode chunks in batches across documents, then mean-pool per document."""
+    flat_chunks: list[dict[str, list[int]]] = []
+    chunk_doc_ids: list[int] = []
     chunk_counts: list[int] = []
 
-    model.eval()
-    for text in texts:
+    print(f"Preparing {split_name} chunks for {len(texts)} documents...", flush=True)
+    for doc_id, text in enumerate(texts):
         chunks = _chunk_text(
             text,
             tokenizer,
@@ -150,21 +150,58 @@ def _encode_documents(
             max_chunks=max_chunks,
         )
         chunk_counts.append(len(chunks))
-        chunk_embeddings: list[torch.Tensor] = []
+        flat_chunks.extend(chunks)
+        chunk_doc_ids.extend([doc_id] * len(chunks))
+        if progress_every > 0 and (doc_id + 1) % 500 == 0:
+            print(
+                f"  prepared {doc_id + 1}/{len(texts)} {split_name} documents "
+                f"({len(flat_chunks)} chunks)",
+                flush=True,
+            )
 
-        for offset in range(0, len(chunks), batch_size):
-            batch = chunks[offset : offset + batch_size]
-            padded = tokenizer.pad(batch, padding=True, return_tensors="pt")
-            padded = {key: value.to(device) for key, value in padded.items()}
-            with torch.inference_mode():
-                outputs = model(**padded)
-                pooled = _mean_pool(outputs.last_hidden_state, padded["attention_mask"])
-            chunk_embeddings.append(pooled.detach().cpu())
+    if not flat_chunks:
+        raise ValueError(f"No chunks produced for {split_name} split")
 
-        document_embedding = torch.cat(chunk_embeddings, dim=0).mean(dim=0)
-        all_embeddings.append(document_embedding.numpy())
+    hidden_size = int(getattr(model.config, "hidden_size"))
+    sums = np.zeros((len(texts), hidden_size), dtype=np.float32)
+    counts = np.zeros(len(texts), dtype=np.int32)
+    total_batches = (len(flat_chunks) + batch_size - 1) // batch_size
+    print(
+        f"Encoding {split_name}: {len(flat_chunks)} chunks in {total_batches} batches "
+        f"on {device}...",
+        flush=True,
+    )
 
-    return np.stack(all_embeddings), chunk_counts
+    model.eval()
+    for batch_index, offset in enumerate(range(0, len(flat_chunks), batch_size), start=1):
+        batch = flat_chunks[offset : offset + batch_size]
+        doc_ids = chunk_doc_ids[offset : offset + batch_size]
+        padded = tokenizer.pad(batch, padding=True, return_tensors="pt")
+        padded = {key: value.to(device) for key, value in padded.items()}
+        with torch.inference_mode():
+            outputs = model(**padded)
+            pooled = _mean_pool(outputs.last_hidden_state, padded["attention_mask"])
+        pooled_np = pooled.detach().cpu().numpy().astype(np.float32, copy=False)
+
+        for row, doc_id in zip(pooled_np, doc_ids, strict=True):
+            sums[doc_id] += row
+            counts[doc_id] += 1
+
+        if progress_every > 0 and (
+            batch_index == 1
+            or batch_index % progress_every == 0
+            or batch_index == total_batches
+        ):
+            percent = 100.0 * batch_index / total_batches
+            print(
+                f"  {split_name}: batch {batch_index}/{total_batches} ({percent:.1f}%)",
+                flush=True,
+            )
+
+    if np.any(counts == 0):
+        raise RuntimeError(f"Some {split_name} documents received no encoded chunks")
+    embeddings = sums / counts[:, None]
+    return embeddings, chunk_counts
 
 
 def main() -> None:
@@ -212,6 +249,7 @@ def main() -> None:
 
     train_x, train_chunks = _encode_documents(
         train["text"].tolist(),
+        split_name="train",
         tokenizer=tokenizer,
         model=model,
         device=device,
@@ -219,9 +257,11 @@ def main() -> None:
         stride=args.chunk_stride,
         max_chunks=args.max_chunks,
         batch_size=args.batch_size,
+        progress_every=args.progress_every,
     )
     test_x, test_chunks = _encode_documents(
         test["text"].tolist(),
+        split_name="test",
         tokenizer=tokenizer,
         model=model,
         device=device,
@@ -229,6 +269,7 @@ def main() -> None:
         stride=args.chunk_stride,
         max_chunks=args.max_chunks,
         batch_size=args.batch_size,
+        progress_every=args.progress_every,
     )
 
     y_train = train[args.label_column].to_numpy()
@@ -273,7 +314,9 @@ def main() -> None:
         ),
         "mean_test_chunks": float(np.mean(test_chunks)),
         "median_test_chunks": float(np.median(test_chunks)),
-        "fraction_test_hitting_max_chunks": float(np.mean(np.asarray(test_chunks) == args.max_chunks)),
+        "fraction_test_hitting_max_chunks": float(
+            np.mean(np.asarray(test_chunks) == args.max_chunks)
+        ),
         "train_rows": int(len(train)),
         "test_rows": int(len(test)),
         "train_positive_rate": float(np.mean(y_train)),
