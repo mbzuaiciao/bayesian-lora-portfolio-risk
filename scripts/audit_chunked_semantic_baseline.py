@@ -103,16 +103,11 @@ def _chunk_text(
     start = 0
     while start < len(token_ids) and len(chunks) < max_chunks:
         piece = token_ids[start : start + content_width]
-        with_special = tokenizer.prepare_for_model(
-            piece,
-            add_special_tokens=True,
-            truncation=False,
-            return_attention_mask=True,
-        )
+        input_ids = tokenizer.build_inputs_with_special_tokens(piece)
         chunks.append(
             {
-                "input_ids": with_special["input_ids"],
-                "attention_mask": with_special["attention_mask"],
+                "input_ids": input_ids,
+                "attention_mask": [1] * len(input_ids),
             }
         )
         if start + content_width >= len(token_ids):
