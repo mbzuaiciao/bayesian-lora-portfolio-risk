@@ -5,6 +5,9 @@ __pycache__/
 .pyright/
 *.pyc
 .DS_Store
-artifacts/*.csv
-artifacts/*.json
-artifacts/*.png
+
+# Large local datasets must never be committed.
+data/FNSPID/
+
+# Generated experiment outputs.
+artifacts/
