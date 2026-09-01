@@ -89,12 +89,22 @@ def _chunk_text(
         return_attention_mask=False,
     )
     token_ids: list[int] = encoded["input_ids"]
+    unk_id = getattr(tokenizer, "unk_token_id", None)
     if not token_ids:
-        token_ids = [tokenizer.unk_token_id]
+        if unk_id is None:
+            raise ValueError("tokenizer returned no tokens and has no unk_token_id")
+        token_ids = [int(unk_id)]
 
-    content_width = chunk_tokens - tokenizer.num_special_tokens_to_add(pair=False)
+    cls_id = getattr(tokenizer, "cls_token_id", None)
+    sep_id = getattr(tokenizer, "sep_token_id", None)
+    if cls_id is None or sep_id is None:
+        raise ValueError("BERT-style tokenizer must expose cls_token_id and sep_token_id")
+
+    # Construct [CLS] content [SEP] directly. This avoids relying on optional
+    # tokenizer helper methods that are absent in some recent transformers builds.
+    content_width = chunk_tokens - 2
     if content_width <= 0:
-        raise ValueError("chunk-tokens is too small for tokenizer special tokens")
+        raise ValueError("chunk-tokens is too small for BERT special tokens")
     step = content_width - stride
     if step <= 0:
         raise ValueError("chunk-stride must be smaller than effective chunk width")
@@ -103,7 +113,7 @@ def _chunk_text(
     start = 0
     while start < len(token_ids) and len(chunks) < max_chunks:
         piece = token_ids[start : start + content_width]
-        input_ids = tokenizer.build_inputs_with_special_tokens(piece)
+        input_ids = [int(cls_id), *[int(token_id) for token_id in piece], int(sep_id)]
         chunks.append(
             {
                 "input_ids": input_ids,
@@ -258,7 +268,12 @@ def main() -> None:
         "max_chunks": args.max_chunks,
         "mean_train_chunks": float(np.mean(train_chunks)),
         "median_train_chunks": float(np.median(train_chunks)),
-        "fraction_train_hitting_max_chunks": float(np.mean(np.asarray(train_chunks) == args.max_chunks)),
+        "fraction_train_hitting_max_chunks": float(
+            np.mean(np.asarray(train_chunks) == args.max_chunks)
+        ),
+        "mean_test_chunks": float(np.mean(test_chunks)),
+        "median_test_chunks": float(np.median(test_chunks)),
+        "fraction_test_hitting_max_chunks": float(np.mean(np.asarray(test_chunks) == args.max_chunks)),
         "train_rows": int(len(train)),
         "test_rows": int(len(test)),
         "train_positive_rate": float(np.mean(y_train)),
