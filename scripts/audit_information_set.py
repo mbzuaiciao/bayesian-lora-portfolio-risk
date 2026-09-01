@@ -50,6 +50,16 @@ def _fmt_float(value: object, digits: int = 4) -> str:
     return f"{float(value):.{digits}f}"
 
 
+def _markdown_table(frame: pd.DataFrame) -> str:
+    """Render a simple Markdown table without pandas' optional tabulate dependency."""
+    columns = [str(column) for column in frame.columns]
+    rows = [[str(value) for value in row] for row in frame.itertuples(index=False, name=None)]
+    header = "| " + " | ".join(columns) + " |"
+    separator = "| " + " | ".join(["---"] * len(columns)) + " |"
+    body = ["| " + " | ".join(row) + " |" for row in rows]
+    return "\n".join([header, separator, *body])
+
+
 def main() -> None:
     args = parse_args()
     if not args.dataset.is_file():
@@ -136,7 +146,7 @@ def main() -> None:
         "",
         "## Alignment summary",
         "",
-        alignment_summary.to_markdown(index=False),
+        _markdown_table(alignment_summary),
         "",
     ]
 
