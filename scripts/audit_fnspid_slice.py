@@ -1,12 +1,14 @@
 """Build and audit a small FNSPID Milestone 0 slice.
 
-Example:
+Pilot example using a smaller Hugging Face derivative:
     uv run python scripts/audit_fnspid_slice.py \
-        --news data/FNSPID/Stock_news/nasdaq_exteral_data.csv \
+        --hf-news-repo benstaf/FNSPID-filtered-nasdaq-100 \
         --prices data/FNSPID/Stock_price/full_history \
-        --tickers AAPL MSFT NVDA JPM XOM \
+        --tickers AAPL MSFT NVDA AMZN COST PEP CSCO GILD \
         --start 2018-01-01 --end 2023-06-30 \
         --output artifacts/fnspid_slice
+
+Canonical local-CSV mode remains available via --news.
 """
 
 from __future__ import annotations
@@ -30,11 +32,18 @@ from bayesian_lora_portfolio_risk.data.fnspid import (
     load_fnspid_news_slice,
     load_fnspid_price_history,
 )
+from bayesian_lora_portfolio_risk.data.hf_news import load_hf_fnspid_news_slice
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--news", type=Path, required=True, help="Raw FNSPID news CSV")
+    news_group = parser.add_mutually_exclusive_group(required=True)
+    news_group.add_argument("--news", type=Path, help="Raw canonical FNSPID news CSV")
+    news_group.add_argument(
+        "--hf-news-repo",
+        help="Hugging Face dataset repo for pilot news ingestion",
+    )
+    parser.add_argument("--hf-split", default="train")
     parser.add_argument("--prices", type=Path, required=True, help="Directory of per-ticker price CSVs")
     parser.add_argument("--tickers", nargs="+", required=True, help="Ticker symbols for the audit slice")
     parser.add_argument("--start", required=True, help="Inclusive news start date")
@@ -47,44 +56,44 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def validate_input_paths(news_path: Path, prices_path: Path) -> None:
-    """Fail early with actionable guidance when FNSPID data is not present."""
-    if not news_path.is_file():
+def _validate_paths(args: argparse.Namespace) -> None:
+    if args.news is not None and not args.news.is_file():
         raise SystemExit(
-            "FNSPID news CSV not found:\n"
-            f"  {news_path}\n\n"
-            "Download/place the FNSPID news CSV locally, or pass its actual location with --news.\n"
-            "The commonly documented filename is 'nasdaq_exteral_data.csv' (spelling as released).\n\n"
-            "Example:\n"
-            "  --news /absolute/path/to/nasdaq_exteral_data.csv\n\n"
-            "To locate an existing download on macOS, try:\n"
-            "  find ~/Downloads ~/Documents -name 'nasdaq_exteral_data.csv' 2>/dev/null\n"
+            f"News CSV not found: {args.news}\n"
+            "Either download the canonical FNSPID news file and pass its real path, "
+            "or use --hf-news-repo for the smaller pilot dataset."
         )
-
-    if not prices_path.is_dir():
+    if not args.prices.is_dir():
         raise SystemExit(
-            "FNSPID price-history directory not found:\n"
-            f"  {prices_path}\n\n"
-            "Extract the FNSPID full_history archive, or pass the directory containing the "
-            "per-ticker price CSV files with --prices.\n\n"
-            "Example:\n"
-            "  --prices /absolute/path/to/full_history\n"
+            f"Price directory not found: {args.prices}\n"
+            "Download and extract FNSPID Stock_price/full_history.zip first."
         )
 
 
 def main() -> None:
     args = parse_args()
-    validate_input_paths(args.news, args.prices)
+    _validate_paths(args)
     args.output.mkdir(parents=True, exist_ok=True)
 
-    news = load_fnspid_news_slice(
-        args.news,
-        tickers=args.tickers,
-        start=args.start,
-        end=args.end,
-        chunksize=args.chunksize,
-        max_rows=args.max_news_rows,
-    )
+    if args.hf_news_repo is not None:
+        news = load_hf_fnspid_news_slice(
+            repo_id=args.hf_news_repo,
+            split=args.hf_split,
+            tickers=args.tickers,
+            start=args.start,
+            end=args.end,
+            max_rows=args.max_news_rows,
+        )
+    else:
+        news = load_fnspid_news_slice(
+            args.news,
+            tickers=args.tickers,
+            start=args.start,
+            end=args.end,
+            chunksize=args.chunksize,
+            max_rows=args.max_news_rows,
+        )
+
     if news.empty:
         raise SystemExit("No news rows matched the requested slice.")
 
