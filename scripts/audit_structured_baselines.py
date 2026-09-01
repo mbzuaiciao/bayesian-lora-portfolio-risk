@@ -1,4 +1,4 @@
-"""Audit whether ticker identity and recent volatility explain the drawdown target.
+"""Audit whether ticker identity and recent volatility explain a downside target.
 
 This script is deliberately run before any language-model training. It fits simple
 chronological baselines to determine how much of the target is predictable from
@@ -8,6 +8,7 @@ Example:
     uv run python scripts/audit_structured_baselines.py \
         --dataset artifacts/fnspid_slice_full/model_ready.csv \
         --prices data/FNSPID/Stock_price/full_history \
+        --label-column label \
         --train-end 2021-12-31 \
         --test-start 2022-01-01 \
         --test-end 2022-12-31
@@ -34,6 +35,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", type=Path, required=True)
     parser.add_argument("--prices", type=Path, required=True)
+    parser.add_argument("--label-column", default="label")
     parser.add_argument("--train-end", required=True)
     parser.add_argument("--test-start", required=True)
     parser.add_argument("--test-end", required=True)
@@ -95,9 +97,11 @@ def main() -> None:
         raise SystemExit(f"Price directory not found: {args.prices}")
 
     frame = pd.read_csv(args.dataset)
+    if args.label_column not in frame.columns:
+        raise SystemExit(f"Label column not found: {args.label_column}")
     frame["ticker"] = frame["ticker"].astype(str).str.upper()
     frame["date"] = pd.to_datetime(frame["date"], errors="raise")
-    frame["label"] = pd.to_numeric(frame["label"], errors="raise").astype(int)
+    frame[args.label_column] = pd.to_numeric(frame[args.label_column], errors="raise").astype(int)
     frame = _add_trailing_volatility(frame, args.prices, window=args.vol_window)
     frame = frame.dropna(subset=["trailing_vol"]).copy()
 
@@ -112,10 +116,11 @@ def main() -> None:
     if train.empty or test.empty:
         raise SystemExit("Train or test split is empty.")
 
-    y_train = train["label"].to_numpy()
-    y_test = test["label"].to_numpy()
+    y_train = train[args.label_column].to_numpy()
+    y_test = test[args.label_column].to_numpy()
 
     results: dict[str, object] = {
+        "label_column": args.label_column,
         "train_rows": int(len(train)),
         "test_rows": int(len(test)),
         "train_positive_rate": float(np.mean(y_train)),
