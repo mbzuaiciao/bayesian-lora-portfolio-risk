@@ -2,31 +2,58 @@
 
 ## Objective
 
-Establish whether Bayesian LoRA produces useful epistemic uncertainty on a timestamped financial-text prediction task before any portfolio optimizer is introduced.
+Establish whether Bayesian LoRA produces useful model uncertainty on a timestamped, event-centered financial-text prediction task before any portfolio optimizer is introduced.
 
-## Locked first task
+## Current task family: earnings episodes
 
-Use FNSPID financial news and stock-price histories to predict whether an asset experiences a material drawdown during the next 20 trading days.
-
-For asset i on date t:
+The preferred observation unit is one company earnings event:
 
 \[
-DD_{i,t}^{(20)} = \min_{1 \le k \le 20}\left(\frac{P_{i,t+k}}{P_{i,t}} - 1\right)
+D_{i,q} = \text{earnings-call transcript and/or earnings release for company i, quarter q}.
 \]
 
-and
+The first target should be one post-event risk outcome, for example:
 
-\[
-y_{i,t} = \mathbf{1}[DD_{i,t}^{(20)} \le -\delta].
-\]
+- abnormal downside return,
+- maximum drawdown over a fixed post-event window, or
+- realized-volatility increase.
 
-Start with \(\delta=10\%\). Any threshold adjustment must be based only on training-period class balance and documented before test evaluation.
+The target must begin strictly after the disclosure event. Pre-event structured variables may be used as baselines, but no post-event information may leak into the feature set.
 
-See `docs/dataset_and_task.md` for the full data contract.
+## Gate 0 — deterministic text must add information
 
-## Experimental contract
+Before standard LoRA or Bayesian LoRA training, compare:
 
-Hold constant:
+1. constant baseline,
+2. simple pre-event structured baseline,
+3. frozen semantic text baseline,
+4. semantic text + structured baseline.
+
+Proceed only if the text representation adds credible incremental information beyond the structured baseline on a chronological test period.
+
+## FNSPID pilot — no-go result
+
+The initial task used FNSPID daily financial news and future volatility-normalized drawdown. It was intentionally stopped before LoRA training after failing Gate 0.
+
+The falsification sequence included:
+
+1. **Stock-identity audit.** The absolute 20-day 10% drawdown label had a strong ticker shortcut. Volatility normalization reduced ticker-only AUROC from roughly 0.74 to roughly 0.54.
+2. **Information-set audit.** Many ticker-associated observations were generic or irrelevant headlines. A relevance filter rejected obvious mismatches and increased median asset-day text length from roughly 164 characters to roughly 9,260 characters by retaining substantive article text.
+3. **Semantic baseline.** Relevance-filtered single-window FinBERT text still failed to improve on trailing volatility.
+4. **Horizon sweep.** Three-, five-, ten-, and twenty-day normalized targets all showed non-positive incremental value from text relative to volatility.
+5. **Longer-context audit.** Four-chunk FinBERT improved the combined model somewhat but remained substantially below volatility alone (approximately 0.616 versus 0.696 AUROC on the 2022 diagnostic split), with worse probabilistic metrics.
+
+Conclusion:
+
+> Generic daily FNSPID news bundles do not provide robust incremental information over recent volatility for predicting volatility-normalized future drawdown in this experimental setup.
+
+This is a rejected operationalization, not a claim that financial language is generally uninformative.
+
+The FNSPID code and artifacts are retained because they document a useful negative result and demonstrate the project's falsification discipline.
+
+## Experimental contract after Gate 0
+
+Once an earnings-event task passes the deterministic text gate, hold constant:
 
 - base language model,
 - tokenizer,
@@ -42,13 +69,13 @@ Vary only the adaptation method:
 
 ## Required splits
 
-Construct three chronological splits:
+Construct chronological splits:
 
-- Train: earlier period.
+- Train: earlier events.
 - ID validation/test: later observations still near the training distribution.
 - Shift test: a strictly later period or materially different market regime.
 
-All documents must respect point-in-time availability. No future text or future-derived features may enter an earlier example. Ambiguous same-day article timing is handled conservatively by assigning the text to the next trading-day information set.
+All documents and structured variables must respect point-in-time availability.
 
 ## Required metrics
 
@@ -80,15 +107,14 @@ All documents must respect point-in-time availability. No future text or future-
 
 ## Go / no-go criteria
 
-Proceed to portfolio integration only if the Bayesian model shows most of the following:
+Proceed to portfolio integration only if:
 
-1. Predictive performance roughly comparable to deterministic LoRA.
-2. Better calibration than deterministic LoRA.
-3. Higher uncertainty on incorrect than correct predictions.
-4. Monotonic or near-monotonic increase in error rate across uncertainty quantiles.
-5. Meaningful increase in uncertainty on the shifted test set.
-
-If uncertainty fails these tests, diagnose the Bayesian approximation, target, or shift construction before adding downstream complexity.
+1. the deterministic earnings-text signal adds information beyond simple pre-event structured variables,
+2. Bayesian-LoRA predictive performance is roughly comparable to deterministic LoRA,
+3. Bayesian-LoRA calibration is better or at least competitive,
+4. uncertainty is higher on errors than on correct predictions,
+5. error rate generally increases with uncertainty,
+6. uncertainty responds meaningfully to the shifted test set.
 
 ## Non-goals
 
@@ -101,4 +127,7 @@ Milestone 0 does not include:
 - multi-agent systems,
 - elaborate financial dashboards.
 
-The milestone asks one question only: **does the uncertainty mean anything?**
+The milestone asks two ordered questions only:
+
+1. **Does the financial document contain incremental predictive information?**
+2. **If so, does Bayesian model uncertainty mean anything?**
