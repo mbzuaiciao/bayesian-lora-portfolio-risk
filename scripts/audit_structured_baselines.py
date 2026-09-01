@@ -62,8 +62,20 @@ def _add_trailing_volatility(
     *,
     window: int,
 ) -> pd.DataFrame:
+    """Return a frame with one leakage-safe ``trailing_vol`` column.
+
+    Volatility-normalized datasets already contain this feature. Reuse it when
+    present so a second merge cannot create ``trailing_vol_x``/``_y`` columns.
+    Otherwise compute the feature from prices using returns strictly before the
+    labeled observation date.
+    """
     if window <= 1:
         raise ValueError("vol-window must be greater than 1")
+
+    if "trailing_vol" in dataset.columns:
+        frame = dataset.copy()
+        frame["trailing_vol"] = pd.to_numeric(frame["trailing_vol"], errors="coerce")
+        return frame
 
     tickers = sorted(dataset["ticker"].astype(str).str.upper().unique())
     prices = load_fnspid_price_history(prices_root, tickers)
@@ -76,17 +88,16 @@ def _add_trailing_volatility(
         .reset_index(level=0, drop=True)
     )
 
-    # shift one trading day so the feature is based strictly on returns known
+    # Shift one trading day so the feature is based strictly on returns known
     # before the labeled observation date.
     prices["trailing_vol"] = prices.groupby("ticker", sort=False)["trailing_vol"].shift(1)
 
-    merged = dataset.merge(
+    return dataset.merge(
         prices[["ticker", "date", "trailing_vol"]],
         on=["ticker", "date"],
         how="left",
         validate="many_to_one",
     )
-    return merged
 
 
 def main() -> None:
