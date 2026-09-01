@@ -47,8 +47,34 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def validate_input_paths(news_path: Path, prices_path: Path) -> None:
+    """Fail early with actionable guidance when FNSPID data is not present."""
+    if not news_path.is_file():
+        raise SystemExit(
+            "FNSPID news CSV not found:\n"
+            f"  {news_path}\n\n"
+            "Download/place the FNSPID news CSV locally, or pass its actual location with --news.\n"
+            "The commonly documented filename is 'nasdaq_exteral_data.csv' (spelling as released).\n\n"
+            "Example:\n"
+            "  --news /absolute/path/to/nasdaq_exteral_data.csv\n\n"
+            "To locate an existing download on macOS, try:\n"
+            "  find ~/Downloads ~/Documents -name 'nasdaq_exteral_data.csv' 2>/dev/null\n"
+        )
+
+    if not prices_path.is_dir():
+        raise SystemExit(
+            "FNSPID price-history directory not found:\n"
+            f"  {prices_path}\n\n"
+            "Extract the FNSPID full_history archive, or pass the directory containing the "
+            "per-ticker price CSV files with --prices.\n\n"
+            "Example:\n"
+            "  --prices /absolute/path/to/full_history\n"
+        )
+
+
 def main() -> None:
     args = parse_args()
+    validate_input_paths(args.news, args.prices)
     args.output.mkdir(parents=True, exist_ok=True)
 
     news = load_fnspid_news_slice(
