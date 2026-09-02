@@ -1,0 +1,69 @@
+{
+  "selection_metric": "validation_auroc",
+  "tfidf_reference_auroc": 0.6118578653180728,
+  "frozen_finbert_reference_auroc": 0.5788952409608344,
+  "runs_completed": 4,
+  "runs_total": 9,
+  "leaderboard": [
+    {
+      "tag": "r4_lr2e-04",
+      "lora_r": 4,
+      "learning_rate": 0.0002,
+      "epochs": 4,
+      "train_max_chunks": 2,
+      "validation_auroc": 0.5785502727550401,
+      "test_auroc": 0.59498887101565,
+      "test_brier": 0.1855825408924445,
+      "test_nll": 0.5603387220278984,
+      "delta_vs_frozen_finbert": 0.016093630054815566,
+      "delta_vs_tfidf": -0.016868994302422835,
+      "artifact": "artifacts/earnings_lora_sweep_stage1/r4_lr2e-04.json",
+      "adapter_dir": "artifacts/earnings_lora_sweep_stage1/adapter_r4_lr2e-04"
+    },
+    {
+      "tag": "r4_lr1e-04",
+      "lora_r": 4,
+      "learning_rate": 0.0001,
+      "epochs": 4,
+      "train_max_chunks": 2,
+      "validation_auroc": 0.5606646736959656,
+      "test_auroc": 0.5853575740742883,
+      "test_brier": 0.1869389827583192,
+      "test_nll": 0.5643416018461951,
+      "delta_vs_frozen_finbert": 0.0064623331134539,
+      "delta_vs_tfidf": -0.026500291243784502,
+      "artifact": "artifacts/earnings_lora_sweep_stage1/r4_lr1e-04.json",
+      "adapter_dir": "artifacts/earnings_lora_sweep_stage1/adapter_r4_lr1e-04"
+    },
+    {
+      "tag": "r8_lr5e-05",
+      "lora_r": 8,
+      "learning_rate": 5e-05,
+      "epochs": 4,
+      "train_max_chunks": 2,
+      "validation_auroc": 0.5539173207397486,
+      "test_auroc": 0.5821061554663179,
+      "test_brier": 0.1869766894352447,
+      "test_nll": 0.5640635278477186,
+      "delta_vs_frozen_finbert": 0.0032109145054834975,
+      "delta_vs_tfidf": -0.029751709851754904,
+      "artifact": "artifacts/earnings_lora_sweep_stage1/r8_lr5e-05.json",
+      "adapter_dir": "artifacts/earnings_lora_sweep_stage1/adapter_r8_lr5e-05"
+    },
+    {
+      "tag": "r4_lr5e-05",
+      "lora_r": 4,
+      "learning_rate": 5e-05,
+      "epochs": 4,
+      "train_max_chunks": 2,
+      "validation_auroc": 0.5487552225645193,
+      "test_auroc": 0.5744185732526338,
+      "test_brier": 0.18760877200232762,
+      "test_nll": 0.5660724704774558,
+      "delta_vs_frozen_finbert": -0.0044766677082006545,
+      "delta_vs_tfidf": -0.037439292065439056,
+      "artifact": "artifacts/earnings_lora_sweep_stage1/r4_lr5e-05.json",
+      "adapter_dir": "artifacts/earnings_lora_sweep_stage1/adapter_r4_lr5e-05"
+    }
+  ]
+}
