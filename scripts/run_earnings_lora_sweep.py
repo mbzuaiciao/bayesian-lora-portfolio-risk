@@ -3,7 +3,11 @@
 Stage 1 intentionally tunes only learning rate and LoRA rank while keeping the
 rest of the earnings downside experiment fixed. Each configuration delegates to
 ``run_earnings_lora_baseline.py`` and writes its own JSON artifact and adapter.
-A compact leaderboard is written after all runs finish.
+A compact leaderboard is updated after every completed configuration.
+
+The launcher is resume-aware: if a configuration's JSON artifact already exists,
+it is loaded and included in the leaderboard instead of being rerun. This makes
+interrupted Lightning AI / GCP sessions safe to resume without wasting GPU time.
 
 Designed primarily for a CUDA machine (Lightning AI / GCP), although it can run
 elsewhere if ``--require-cuda`` is omitted.
@@ -63,13 +67,60 @@ def _load_result(path: Path) -> dict[str, Any]:
         return json.load(handle)
 
 
+def _summary_row(
+    *,
+    tag: str,
+    rank: int,
+    learning_rate: float,
+    epochs: int,
+    train_max_chunks: int,
+    output: Path,
+    adapter_dir: Path,
+) -> dict[str, Any]:
+    result = _load_result(output)
+    test_metrics = result["test"]
+    validation_metrics = result["validation"]
+    return {
+        "tag": tag,
+        "lora_r": rank,
+        "learning_rate": learning_rate,
+        "epochs": epochs,
+        "train_max_chunks": train_max_chunks,
+        "validation_auroc": validation_metrics["auroc"],
+        "test_auroc": test_metrics["auroc"],
+        "test_brier": test_metrics["brier"],
+        "test_nll": test_metrics["nll"],
+        "delta_vs_frozen_finbert": test_metrics["auroc"] - FROZEN_FINBERT_REFERENCE_AUROC,
+        "delta_vs_tfidf": test_metrics["auroc"] - TFIDF_REFERENCE_AUROC,
+        "artifact": str(output),
+        "adapter_dir": str(adapter_dir),
+    }
+
+
+def _write_leaderboard(output_dir: Path, runs: list[dict[str, Any]], total: int) -> None:
+    leaderboard = sorted(runs, key=lambda row: row["validation_auroc"], reverse=True)
+    payload = {
+        "selection_metric": "validation_auroc",
+        "important_note": (
+            "Hyperparameters are ranked by validation AUROC. Test AUROC is reported for diagnosis "
+            "but must not be used to choose the winning configuration."
+        ),
+        "tfidf_reference_auroc": TFIDF_REFERENCE_AUROC,
+        "frozen_finbert_reference_auroc": FROZEN_FINBERT_REFERENCE_AUROC,
+        "runs_completed": len(runs),
+        "runs_total": total,
+        "leaderboard": leaderboard,
+    }
+    (output_dir / "leaderboard.json").write_text(
+        json.dumps(payload, indent=2) + "\n", encoding="utf-8"
+    )
+
+
 def main() -> None:
     args = parse_args()
     if args.require_cuda and not _cuda_available():
         raise SystemExit("CUDA is required for this sweep but torch.cuda.is_available() is false")
 
-    # Small first-stage grid: enough to test whether the initial r=8, lr=2e-4 run
-    # was simply under-tuned without spending heavily on context/seed sweeps yet.
     learning_rates = [5e-5, 1e-4, 2e-4]
     ranks = [4, 8, 16]
 
@@ -84,6 +135,30 @@ def main() -> None:
             tag = f"r{rank}_lr{learning_rate:.0e}".replace("+", "")
             output = args.output_dir / f"{tag}.json"
             adapter_dir = args.output_dir / f"adapter_{tag}"
+
+            if output.exists():
+                print(
+                    f"\n=== Sweep run {run_index}/{total}: {tag} already complete; skipping ===",
+                    flush=True,
+                )
+                try:
+                    runs.append(
+                        _summary_row(
+                            tag=tag,
+                            rank=rank,
+                            learning_rate=learning_rate,
+                            epochs=args.epochs,
+                            train_max_chunks=args.train_max_chunks,
+                            output=output,
+                            adapter_dir=adapter_dir,
+                        )
+                    )
+                except (KeyError, json.JSONDecodeError, OSError) as exc:
+                    raise SystemExit(
+                        f"Existing artifact {output} could not be loaded as a completed run: {exc}"
+                    ) from exc
+                _write_leaderboard(args.output_dir, runs, total)
+                continue
 
             command = [
                 sys.executable,
@@ -133,56 +208,20 @@ def main() -> None:
                 flush=True,
             )
             subprocess.run(command, check=True)
-            result = _load_result(output)
-            test_metrics = result["test"]
-            validation_metrics = result["validation"]
             runs.append(
-                {
-                    "tag": tag,
-                    "lora_r": rank,
-                    "learning_rate": learning_rate,
-                    "epochs": args.epochs,
-                    "train_max_chunks": args.train_max_chunks,
-                    "validation_auroc": validation_metrics["auroc"],
-                    "test_auroc": test_metrics["auroc"],
-                    "test_brier": test_metrics["brier"],
-                    "test_nll": test_metrics["nll"],
-                    "delta_vs_frozen_finbert": test_metrics["auroc"]
-                    - FROZEN_FINBERT_REFERENCE_AUROC,
-                    "delta_vs_tfidf": test_metrics["auroc"] - TFIDF_REFERENCE_AUROC,
-                    "artifact": str(output),
-                    "adapter_dir": str(adapter_dir),
-                }
+                _summary_row(
+                    tag=tag,
+                    rank=rank,
+                    learning_rate=learning_rate,
+                    epochs=args.epochs,
+                    train_max_chunks=args.train_max_chunks,
+                    output=output,
+                    adapter_dir=adapter_dir,
+                )
             )
-
-            leaderboard = sorted(runs, key=lambda row: row["validation_auroc"], reverse=True)
-            partial = {
-                "selection_metric": "validation_auroc",
-                "tfidf_reference_auroc": TFIDF_REFERENCE_AUROC,
-                "frozen_finbert_reference_auroc": FROZEN_FINBERT_REFERENCE_AUROC,
-                "runs_completed": len(runs),
-                "runs_total": total,
-                "leaderboard": leaderboard,
-            }
-            (args.output_dir / "leaderboard.json").write_text(
-                json.dumps(partial, indent=2) + "\n", encoding="utf-8"
-            )
+            _write_leaderboard(args.output_dir, runs, total)
 
     leaderboard = sorted(runs, key=lambda row: row["validation_auroc"], reverse=True)
-    final = {
-        "selection_metric": "validation_auroc",
-        "important_note": (
-            "Hyperparameters are ranked by validation AUROC. Test AUROC is reported for diagnosis "
-            "but must not be used to choose the winning configuration."
-        ),
-        "tfidf_reference_auroc": TFIDF_REFERENCE_AUROC,
-        "frozen_finbert_reference_auroc": FROZEN_FINBERT_REFERENCE_AUROC,
-        "runs_completed": len(runs),
-        "runs_total": total,
-        "leaderboard": leaderboard,
-    }
-    leaderboard_path = args.output_dir / "leaderboard.json"
-    leaderboard_path.write_text(json.dumps(final, indent=2) + "\n", encoding="utf-8")
 
     print("\n=== Stage-1 leaderboard (selected by validation AUROC) ===")
     for position, row in enumerate(leaderboard, start=1):
@@ -192,7 +231,7 @@ def main() -> None:
             f"test_auc={row['test_auroc']:.4f} "
             f"delta_vs_tfidf={row['delta_vs_tfidf']:+.4f}"
         )
-    print(f"\nLeaderboard written to {leaderboard_path}")
+    print(f"\nLeaderboard written to {args.output_dir / 'leaderboard.json'}")
 
 
 if __name__ == "__main__":
