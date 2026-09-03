@@ -1,0 +1,90 @@
+{
+  "repo_id": "RudrakshNanavaty/earnings-call-data",
+  "split": "train",
+  "rows_loaded": 20000,
+  "rows_after_filtering": 18122,
+  "train_end": "2021-12-31",
+  "test_start": "2022-01-01",
+  "test_end": "2023-12-31",
+  "pretest_rows": 14022,
+  "train_rows": 11918,
+  "validation_rows": 2104,
+  "test_rows": 2372,
+  "validation_fraction": 0.15,
+  "target": "move_1d downside tail",
+  "target_positive_rate_requested": 0.2,
+  "training_threshold_move_1d": -0.03652673221527482,
+  "train_positive_rate": 0.1990266823292499,
+  "validation_positive_rate": 0.20579847908745247,
+  "test_positive_rate": 0.2436762225969646,
+  "model_name": "ProsusAI/finbert",
+  "device": "cuda",
+  "chunk_tokens": 384,
+  "chunk_stride": 64,
+  "train_max_chunks": 2,
+  "eval_max_chunks": 4,
+  "train_chunks": 23832,
+  "validation_chunks": 8416,
+  "test_chunks": 9478,
+  "epochs": 4,
+  "learning_rate": 0.0002,
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "lora_dropout": 0.05,
+  "trainable_params": 591362,
+  "total_params": 110075140,
+  "history": [
+    {
+      "epoch": 1,
+      "train_chunk_loss": 0.5150062126201271,
+      "validation": {
+        "brier": 0.16324309464289335,
+        "nll": 0.5078822886265438,
+        "auroc": 0.5548474658727953
+      }
+    },
+    {
+      "epoch": 2,
+      "train_chunk_loss": 0.49856086281321993,
+      "validation": {
+        "brier": 0.1617204004186402,
+        "nll": 0.5028204010938627,
+        "auroc": 0.5819142746180945
+      }
+    },
+    {
+      "epoch": 3,
+      "train_chunk_loss": 0.4916878394432516,
+      "validation": {
+        "brier": 0.16120937867437024,
+        "nll": 0.5011398210286966,
+        "auroc": 0.5917492118643951
+      }
+    },
+    {
+      "epoch": 4,
+      "train_chunk_loss": 0.4842080466299249,
+      "validation": {
+        "brier": 0.16107771371056723,
+        "nll": 0.5005595992343838,
+        "auroc": 0.5950399630706122
+      }
+    }
+  ],
+  "best_validation_auroc": 0.5950399630706122,
+  "validation": {
+    "brier": 0.16107771371056723,
+    "nll": 0.5005595992343838,
+    "auroc": 0.5950399630706122
+  },
+  "test": {
+    "brier": 0.18359924052366564,
+    "nll": 0.5547575966536404,
+    "auroc": 0.5851299795936474
+  },
+  "reference_auroc": {
+    "tfidf_text_only": 0.6118578653180728,
+    "frozen_chunked_finbert_text_only": 0.5788952409608344
+  },
+  "adapter_dir": "artifacts/earnings_lora_stage2_repro/adapter_r16_lr2e-04_seed123"
+}
