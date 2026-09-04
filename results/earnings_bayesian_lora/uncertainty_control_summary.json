@@ -1,0 +1,71 @@
+{
+  "purpose": "Bayesian epistemic uncertainty versus deterministic confidence control",
+  "important_note": "2022-2023 remains development/diagnostic data. Do not use these results to tune additional hyperparameters; reserve 2024-2025 for final holdout confirmation.",
+  "kl_beta_frozen": 0.003,
+  "mc_samples": 32,
+  "configs_completed": 3,
+  "configs_total": 3,
+  "complete": true,
+  "runs": [
+    {
+      "seed": 42,
+      "validation_auroc": 0.5954476789907441,
+      "diagnostic_test_posterior_predictive_auroc": 0.6030800476791149,
+      "epistemic_error_detection_auroc": 0.5863514576886499,
+      "confidence_error_detection_auroc": 0.6020565503058274,
+      "epistemic_minus_confidence_error_detection_auroc": -0.015705092617177452,
+      "epistemic_selective_risk_50": 0.19645868465430016,
+      "confidence_selective_risk_50": 0.18802698145025296,
+      "full_risk": 0.24325463743676223,
+      "full_minus_epistemic_selective_risk_50": 0.04679595278246207,
+      "full_minus_confidence_selective_risk_50": 0.05522765598650928,
+      "mean_epistemic_variance": 7.416872656230622e-05,
+      "artifact": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_42_mc32.json",
+      "predictions": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_42_mc32_predictions.csv"
+    },
+    {
+      "seed": 123,
+      "validation_auroc": 0.6038963821085961,
+      "diagnostic_test_posterior_predictive_auroc": 0.5965598515621082,
+      "epistemic_error_detection_auroc": 0.5746220581484611,
+      "confidence_error_detection_auroc": 0.5965598515621082,
+      "epistemic_minus_confidence_error_detection_auroc": -0.0219377934136471,
+      "epistemic_selective_risk_50": 0.20236087689713322,
+      "confidence_selective_risk_50": 0.19477234401349072,
+      "full_risk": 0.2436762225969646,
+      "full_minus_epistemic_selective_risk_50": 0.04131534569983136,
+      "full_minus_confidence_selective_risk_50": 0.048903878583473864,
+      "mean_epistemic_variance": 5.4753436781899964e-05,
+      "artifact": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_123_mc32.json",
+      "predictions": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_123_mc32_predictions.csv"
+    },
+    {
+      "seed": 777,
+      "validation_auroc": 0.6095961124632537,
+      "diagnostic_test_posterior_predictive_auroc": 0.5931700439373073,
+      "epistemic_error_detection_auroc": 0.5782491040878284,
+      "confidence_error_detection_auroc": 0.5931700439373073,
+      "epistemic_minus_confidence_error_detection_auroc": -0.014920939849478954,
+      "epistemic_selective_risk_50": 0.19898819561551434,
+      "confidence_selective_risk_50": 0.19224283305227655,
+      "full_risk": 0.2436762225969646,
+      "full_minus_epistemic_selective_risk_50": 0.044688026981450246,
+      "full_minus_confidence_selective_risk_50": 0.05143338954468804,
+      "mean_epistemic_variance": 2.9709311912450512e-05,
+      "artifact": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_777_mc32.json",
+      "predictions": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_777_mc32_predictions.csv"
+    }
+  ],
+  "aggregate": {
+    "epistemic_error_detection_auroc_mean": 0.5797408733083131,
+    "epistemic_error_detection_auroc_std": 0.0049033141818389655,
+    "confidence_error_detection_auroc_mean": 0.5972621486017476,
+    "confidence_error_detection_auroc_std": 0.0036617313489979604,
+    "epistemic_minus_confidence_error_detection_auroc_mean": -0.017521275293434502,
+    "epistemic_beats_confidence_auc_seed_count": 0,
+    "epistemic_selective_risk_50_mean": 0.1992692523889826,
+    "confidence_selective_risk_50_mean": 0.19168071950534007,
+    "confidence_minus_epistemic_selective_risk_50_mean": -0.0075885328836425014,
+    "epistemic_beats_confidence_selective_risk_seed_count": 0
+  }
+}

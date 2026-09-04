@@ -1,0 +1,82 @@
+{
+  "purpose": "incremental epistemic value beyond ordinary confidence",
+  "important_note": "This uses 2022 to fit a simple error model and evaluates on 2023. Both years are development diagnostics; reserve 2024-2025 for final confirmation.",
+  "baseline": "logistic error model using confidence uncertainty only",
+  "augmented": "logistic error model using confidence uncertainty plus log epistemic variance",
+  "runs": [
+    {
+      "seed": 42,
+      "train_year": 2022,
+      "test_year": 2023,
+      "train_n": 1191,
+      "test_n": 1181,
+      "train_error_rate": 0.24517212426532325,
+      "test_error_rate": 0.24132091447925486,
+      "confidence_only": {
+        "auroc": 0.6037476503759398,
+        "log_loss": 0.5443443089850649
+      },
+      "confidence_plus_epistemic": {
+        "auroc": 0.6042293233082707,
+        "log_loss": 0.5444319386774625
+      },
+      "delta_auroc": 0.00048167293233092323,
+      "delta_log_loss": 8.76296923976172e-05,
+      "residual_epistemic_error_auroc": 0.5022008145363408,
+      "input": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_42_mc32_predictions.csv"
+    },
+    {
+      "seed": 123,
+      "train_year": 2022,
+      "test_year": 2023,
+      "train_n": 1191,
+      "test_n": 1181,
+      "train_error_rate": 0.24517212426532325,
+      "test_error_rate": 0.24216765453005928,
+      "confidence_only": {
+        "auroc": 0.5979255381490017,
+        "log_loss": 0.5447213502769971
+      },
+      "confidence_plus_epistemic": {
+        "auroc": 0.598910028518967,
+        "log_loss": 0.5447472079089161
+      },
+      "delta_auroc": 0.0009844903699652852,
+      "delta_log_loss": 2.5857631918979607e-05,
+      "residual_epistemic_error_auroc": 0.4931906082744072,
+      "input": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_123_mc32_predictions.csv"
+    },
+    {
+      "seed": 777,
+      "train_year": 2022,
+      "test_year": 2023,
+      "train_n": 1191,
+      "test_n": 1181,
+      "train_error_rate": 0.24517212426532325,
+      "test_error_rate": 0.24216765453005928,
+      "confidence_only": {
+        "auroc": 0.5966832050630932,
+        "log_loss": 0.5458727960365479
+      },
+      "confidence_plus_epistemic": {
+        "auroc": 0.5869203422276048,
+        "log_loss": 0.5465149009941621
+      },
+      "delta_auroc": -0.00976286283548844,
+      "delta_log_loss": 0.0006421049576141868,
+      "residual_epistemic_error_auroc": 0.4936320662577646,
+      "input": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_777_mc32_predictions.csv"
+    }
+  ],
+  "aggregate": {
+    "delta_auroc_mean": -0.002765566511064077,
+    "delta_auroc_std": 0.004952092031505427,
+    "augmented_beats_baseline_auroc_seed_count": 2,
+    "delta_log_loss_mean": 0.0002518640939769279,
+    "delta_log_loss_std": 0.00027709191688344073,
+    "augmented_beats_baseline_log_loss_seed_count": 0,
+    "residual_epistemic_error_auroc_mean": 0.49634116302283754,
+    "residual_epistemic_error_auroc_std": 0.004147317059059049,
+    "residual_epistemic_above_random_seed_count": 1
+  }
+}

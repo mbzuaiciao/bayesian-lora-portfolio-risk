@@ -1,0 +1,167 @@
+{
+  "purpose": "multi-seed replication of Bayesian-LoRA uncertainty",
+  "important_note": "2022-2023 uncertainty metrics are development diagnostics because that period has already been inspected repeatedly. Reserve 2024-2025 for a later untouched holdout.",
+  "selection_metric": "pre-2022 validation posterior-mean AUROC",
+  "configs_completed": 6,
+  "configs_total": 6,
+  "complete": true,
+  "beta_summaries": [
+    {
+      "kl_beta": 0.003,
+      "n_seeds": 3,
+      "validation_auroc_mean": 0.6030307344092426,
+      "validation_auroc_std": 0.005748943989969086,
+      "error_detection_auroc_mean": 0.5682122939108187,
+      "error_detection_auroc_std": 0.008381868243702007,
+      "lowest_uncertainty_quintile_error_mean": 0.17894736842105263,
+      "highest_uncertainty_quintile_error_mean": 0.2995780590717299,
+      "high_minus_low_quintile_error_gap_mean": 0.12063069065067732,
+      "high_minus_low_quintile_error_gap_std": 0.009579122184894207,
+      "quintile_gap_positive_all_seeds": true,
+      "strictly_monotone_quintiles_seed_count": 2,
+      "selective_risk_50_mean": 0.20854412591343452,
+      "full_risk_mean": 0.24353569421023047,
+      "full_minus_50pct_selective_risk_mean": 0.03499156829679596,
+      "selective_risk_improves_all_seeds": true,
+      "mean_epistemic_variance": 4.816617357767368e-05,
+      "runs": [
+        {
+          "kl_beta": 0.003,
+          "seed": 42,
+          "validation_auroc": 0.5955969444801483,
+          "diagnostic_test_posterior_predictive_auroc": 0.6030231490589546,
+          "error_detection_auroc": 0.5641175419879021,
+          "uncertainty_quintile_errors": [
+            0.18736842105263157,
+            0.21473684210526317,
+            0.2489451476793249,
+            0.270042194092827,
+            0.29535864978902954
+          ],
+          "strictly_monotone_quintiles": true,
+          "selective_risk_50": 0.20741989881956155,
+          "selective_risk_100": 0.24325463743676223,
+          "mean_epistemic_variance": 7.067010482848839e-05,
+          "artifact": "artifacts/earnings_bayesian_lora_repro/beta_0p003_seed_42.json"
+        },
+        {
+          "kl_beta": 0.003,
+          "seed": 123,
+          "validation_auroc": 0.6038963821085961,
+          "diagnostic_test_posterior_predictive_auroc": 0.5966302515497641,
+          "error_detection_auroc": 0.5606259619724341,
+          "uncertainty_quintile_errors": [
+            0.17473684210526316,
+            0.24842105263157896,
+            0.24472573839662448,
+            0.25316455696202533,
+            0.2974683544303797
+          ],
+          "strictly_monotone_quintiles": false,
+          "selective_risk_50": 0.21838111298482293,
+          "selective_risk_100": 0.2436762225969646,
+          "mean_epistemic_variance": 4.804931866249033e-05,
+          "artifact": "artifacts/earnings_bayesian_lora_repro/beta_0p003_seed_123.json"
+        },
+        {
+          "kl_beta": 0.003,
+          "seed": 777,
+          "validation_auroc": 0.6095988766389835,
+          "diagnostic_test_posterior_predictive_auroc": 0.5924554358434304,
+          "error_detection_auroc": 0.5798933777721201,
+          "uncertainty_quintile_errors": [
+            0.17473684210526316,
+            0.20421052631578948,
+            0.2468354430379747,
+            0.2869198312236287,
+            0.3059071729957806
+          ],
+          "strictly_monotone_quintiles": true,
+          "selective_risk_50": 0.19983136593591905,
+          "selective_risk_100": 0.2436762225969646,
+          "mean_epistemic_variance": 2.5779097242042304e-05,
+          "artifact": "artifacts/earnings_bayesian_lora_repro/beta_0p003_seed_777.json"
+        }
+      ]
+    },
+    {
+      "kl_beta": 0.01,
+      "n_seeds": 3,
+      "validation_auroc_mean": 0.6012929892671663,
+      "validation_auroc_std": 0.007933531811626747,
+      "error_detection_auroc_mean": 0.5679688118677092,
+      "error_detection_auroc_std": 0.008718617327248856,
+      "lowest_uncertainty_quintile_error_mean": 0.17403508771929824,
+      "highest_uncertainty_quintile_error_mean": 0.29395218002812945,
+      "high_minus_low_quintile_error_gap_mean": 0.11991709230883119,
+      "high_minus_low_quintile_error_gap_std": 0.008137719176028917,
+      "quintile_gap_positive_all_seeds": true,
+      "strictly_monotone_quintiles_seed_count": 2,
+      "selective_risk_50_mean": 0.20854412591343452,
+      "full_risk_mean": 0.24353569421023047,
+      "full_minus_50pct_selective_risk_mean": 0.03499156829679596,
+      "selective_risk_improves_all_seeds": true,
+      "mean_epistemic_variance": 4.480425788195019e-05,
+      "runs": [
+        {
+          "kl_beta": 0.01,
+          "seed": 42,
+          "validation_auroc": 0.5905910222336475,
+          "diagnostic_test_posterior_predictive_auroc": 0.596323095439238,
+          "error_detection_auroc": 0.5629483014149645,
+          "uncertainty_quintile_errors": [
+            0.17684210526315788,
+            0.23157894736842105,
+            0.26371308016877637,
+            0.2552742616033755,
+            0.2890295358649789
+          ],
+          "strictly_monotone_quintiles": false,
+          "selective_risk_50": 0.21079258010118043,
+          "selective_risk_100": 0.24325463743676223,
+          "mean_epistemic_variance": 5.6433388007015453e-05,
+          "artifact": "artifacts/earnings_bayesian_lora_repro/beta_0p01_seed_42.json"
+        },
+        {
+          "kl_beta": 0.01,
+          "seed": 123,
+          "validation_auroc": 0.6037263853012191,
+          "diagnostic_test_posterior_predictive_auroc": 0.5966514679844002,
+          "error_detection_auroc": 0.560726257845259,
+          "uncertainty_quintile_errors": [
+            0.1726315789473684,
+            0.24421052631578946,
+            0.2552742616033755,
+            0.25738396624472576,
+            0.2890295358649789
+          ],
+          "strictly_monotone_quintiles": true,
+          "selective_risk_50": 0.21500843170320405,
+          "selective_risk_100": 0.2436762225969646,
+          "mean_epistemic_variance": 5.106854787157919e-05,
+          "artifact": "artifacts/earnings_bayesian_lora_repro/beta_0p01_seed_123.json"
+        },
+        {
+          "kl_beta": 0.01,
+          "seed": 777,
+          "validation_auroc": 0.6095615602666324,
+          "diagnostic_test_posterior_predictive_auroc": 0.592924126172208,
+          "error_detection_auroc": 0.580231876342904,
+          "uncertainty_quintile_errors": [
+            0.1726315789473684,
+            0.20842105263157895,
+            0.23417721518987342,
+            0.29957805907172996,
+            0.3037974683544304
+          ],
+          "strictly_monotone_quintiles": true,
+          "selective_risk_50": 0.19983136593591905,
+          "selective_risk_100": 0.2436762225969646,
+          "mean_epistemic_variance": 2.6910837767255933e-05,
+          "artifact": "artifacts/earnings_bayesian_lora_repro/beta_0p01_seed_777.json"
+        }
+      ]
+    }
+  ],
+  "selected_by_mean_validation_auroc": 0.003
+}
