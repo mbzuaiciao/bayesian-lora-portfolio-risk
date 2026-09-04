@@ -1,0 +1,205 @@
+{
+  "purpose": "exploratory economic bridge from Bayesian earnings risk to capital allocation",
+  "methodological_status": "post-hoc downstream analysis: 2024-2025 was already inspected for predictive uncertainty; do not describe this as a pristine confirmatory portfolio test",
+  "allocation_rules": {
+    "posterior_mean_only": "gross-normalized weight proportional to 1 - posterior downside probability",
+    "confidence_adjusted": "posterior-mean weight multiplied by 2*abs(p-0.5)",
+    "epistemic_adjusted": "posterior-mean weight multiplied by 1 - development-CDF percentile of epistemic variance"
+  },
+  "fairness_constraint": "all strategies normalized to identical gross exposure",
+  "primary_risk_metric": "weighted downside-event rate using the already-fixed downside label",
+  "runs": [
+    {
+      "seed": 42,
+      "n_holdout": 1728,
+      "holdout_start": "2024-01-04",
+      "holdout_end": "2025-05-15",
+      "allocation_metrics": {
+        "posterior_mean_only": {
+          "gross_exposure": 1728.0,
+          "weighted_downside_event_rate": 0.25711760466137346,
+          "weighted_mean_move_1d": 0.0003086544731109276,
+          "weighted_mean_downside_loss": 0.02509200639745955,
+          "mean_weight_bad_events": 0.9786326450547429,
+          "mean_weight_good_events": 1.0076144263305704,
+          "bad_to_good_mean_weight_ratio": 0.9712372307119793,
+          "effective_n": 1719.241249323752,
+          "max_normalized_weight": 0.000649123894964562
+        },
+        "confidence_adjusted": {
+          "gross_exposure": 1728.0,
+          "weighted_downside_event_rate": 0.24463570537234833,
+          "weighted_mean_move_1d": 0.002209154465840116,
+          "weighted_mean_downside_loss": 0.023297651726676798,
+          "mean_weight_bad_events": 0.9311244468797752,
+          "mean_weight_good_events": 1.024544349385072,
+          "bad_to_good_mean_weight_ratio": 0.9088180979560649,
+          "effective_n": 1636.4003238106209,
+          "max_normalized_weight": 0.0008424899612762374
+        },
+        "epistemic_adjusted": {
+          "gross_exposure": 1728.0000000000002,
+          "weighted_downside_event_rate": 0.22618235873634587,
+          "weighted_mean_move_1d": 0.00495406644680002,
+          "weighted_mean_downside_loss": 0.020965955149678715,
+          "mean_weight_bad_events": 0.8608879204766646,
+          "mean_weight_good_events": 1.0495736923890067,
+          "bad_to_good_mean_weight_ratio": 0.8202262754101035,
+          "effective_n": 1306.5316539272333,
+          "max_normalized_weight": 0.0011742881387904486
+        }
+      },
+      "comparisons_vs_posterior_mean_only": {
+        "confidence_adjusted": {
+          "delta_downside_event_rate_vs_mean_only": -0.012481899289025128,
+          "delta_mean_move_1d_vs_mean_only": 0.0019004999927291885,
+          "delta_mean_downside_loss_vs_mean_only": -0.0017943546707827537
+        },
+        "epistemic_adjusted": {
+          "delta_downside_event_rate_vs_mean_only": -0.030935245925027582,
+          "delta_mean_move_1d_vs_mean_only": 0.004645411973689092,
+          "delta_mean_downside_loss_vs_mean_only": -0.004126051247780836
+        }
+      },
+      "epistemic_vs_confidence": {
+        "delta_downside_event_rate_epistemic_minus_confidence": -0.018453346636002455,
+        "delta_mean_move_1d_epistemic_minus_confidence": 0.0027449119809599036,
+        "delta_mean_downside_loss_epistemic_minus_confidence": -0.0023316965769980824
+      },
+      "development_predictions": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_42_mc32_predictions.csv",
+      "holdout_predictions": "artifacts/earnings_bayesian_lora_final_holdout/beta_0p003_seed_42_mc32_predictions.csv"
+    },
+    {
+      "seed": 123,
+      "n_holdout": 1728,
+      "holdout_start": "2024-01-04",
+      "holdout_end": "2025-05-15",
+      "allocation_metrics": {
+        "posterior_mean_only": {
+          "gross_exposure": 1727.9999999999995,
+          "weighted_downside_event_rate": 0.2570325940387943,
+          "weighted_mean_move_1d": 0.0003287105528155441,
+          "weighted_mean_downside_loss": 0.02508158481375201,
+          "mean_weight_bad_events": 0.9783090803943532,
+          "mean_weight_good_events": 1.0077297311624518,
+          "bad_to_good_mean_weight_ratio": 0.9708050185894973,
+          "effective_n": 1718.955672133722,
+          "max_normalized_weight": 0.0006472719485508246
+        },
+        "confidence_adjusted": {
+          "gross_exposure": 1727.9999999999995,
+          "weighted_downside_event_rate": 0.24403891957959978,
+          "weighted_mean_move_1d": 0.0023688949005099364,
+          "weighted_mean_downside_loss": 0.023168561541705015,
+          "mean_weight_bad_events": 0.9288529802501064,
+          "mean_weight_good_events": 1.025353804526257,
+          "bad_to_good_mean_weight_ratio": 0.9058853404062448,
+          "effective_n": 1629.9040129897444,
+          "max_normalized_weight": 0.0008377751469931673
+        },
+        "epistemic_adjusted": {
+          "gross_exposure": 1728.0,
+          "weighted_downside_event_rate": 0.22752344685324477,
+          "weighted_mean_move_1d": 0.004705286007311085,
+          "weighted_mean_downside_loss": 0.021229422186787257,
+          "mean_weight_bad_events": 0.8659923263489139,
+          "mean_weight_good_events": 1.0477546968897904,
+          "bad_to_good_mean_weight_ratio": 0.8265220179108437,
+          "effective_n": 1279.0642043512796,
+          "max_normalized_weight": 0.0012366235049923932
+        }
+      },
+      "comparisons_vs_posterior_mean_only": {
+        "confidence_adjusted": {
+          "delta_downside_event_rate_vs_mean_only": -0.012993674459194526,
+          "delta_mean_move_1d_vs_mean_only": 0.0020401843476943924,
+          "delta_mean_downside_loss_vs_mean_only": -0.0019130232720469958
+        },
+        "epistemic_adjusted": {
+          "delta_downside_event_rate_vs_mean_only": -0.029509147185549534,
+          "delta_mean_move_1d_vs_mean_only": 0.004376575454495541,
+          "delta_mean_downside_loss_vs_mean_only": -0.0038521626269647537
+        }
+      },
+      "epistemic_vs_confidence": {
+        "delta_downside_event_rate_epistemic_minus_confidence": -0.016515472726355007,
+        "delta_mean_move_1d_epistemic_minus_confidence": 0.002336391106801149,
+        "delta_mean_downside_loss_epistemic_minus_confidence": -0.0019391393549177578
+      },
+      "development_predictions": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_123_mc32_predictions.csv",
+      "holdout_predictions": "artifacts/earnings_bayesian_lora_final_holdout/beta_0p003_seed_123_mc32_predictions.csv"
+    },
+    {
+      "seed": 777,
+      "n_holdout": 1728,
+      "holdout_start": "2024-01-04",
+      "holdout_end": "2025-05-15",
+      "allocation_metrics": {
+        "posterior_mean_only": {
+          "gross_exposure": 1728.0000000000002,
+          "weighted_downside_event_rate": 0.25922574421846356,
+          "weighted_mean_move_1d": -9.306283175453117e-05,
+          "weighted_mean_downside_loss": 0.025427208659442563,
+          "mean_weight_bad_events": 0.9866565771134473,
+          "mean_weight_good_events": 1.0047550345294307,
+          "bad_to_good_mean_weight_ratio": 0.9819871940980524,
+          "effective_n": 1724.5825604033596,
+          "max_normalized_weight": 0.000621387031634657
+        },
+        "confidence_adjusted": {
+          "gross_exposure": 1728.0000000000005,
+          "weighted_downside_event_rate": 0.25155730532756304,
+          "weighted_mean_move_1d": 0.0010016560850406313,
+          "weighted_mean_downside_loss": 0.02431532772799624,
+          "mean_weight_bad_events": 0.9574692149912535,
+          "mean_weight_good_events": 1.01515618241285,
+          "bad_to_good_mean_weight_ratio": 0.9431742933540682,
+          "effective_n": 1692.841130994207,
+          "max_normalized_weight": 0.0007276814280978475
+        },
+        "epistemic_adjusted": {
+          "gross_exposure": 1728.0,
+          "weighted_downside_event_rate": 0.22487461152307345,
+          "weighted_mean_move_1d": 0.004223972476553208,
+          "weighted_mean_downside_loss": 0.02084919189789969,
+          "mean_weight_bad_events": 0.855910415664914,
+          "mean_weight_good_events": 1.0513474656892692,
+          "bad_to_good_mean_weight_ratio": 0.814108031452546,
+          "effective_n": 1259.342867104719,
+          "max_normalized_weight": 0.0012243327197803669
+        }
+      },
+      "comparisons_vs_posterior_mean_only": {
+        "confidence_adjusted": {
+          "delta_downside_event_rate_vs_mean_only": -0.00766843889090052,
+          "delta_mean_move_1d_vs_mean_only": 0.0010947189167951625,
+          "delta_mean_downside_loss_vs_mean_only": -0.001111880931446322
+        },
+        "epistemic_adjusted": {
+          "delta_downside_event_rate_vs_mean_only": -0.03435113269539011,
+          "delta_mean_move_1d_vs_mean_only": 0.004317035308307739,
+          "delta_mean_downside_loss_vs_mean_only": -0.004578016761542871
+        }
+      },
+      "epistemic_vs_confidence": {
+        "delta_downside_event_rate_epistemic_minus_confidence": -0.026682693804489593,
+        "delta_mean_move_1d_epistemic_minus_confidence": 0.0032223163915125765,
+        "delta_mean_downside_loss_epistemic_minus_confidence": -0.003466135830096549
+      },
+      "development_predictions": "artifacts/earnings_bayesian_lora_uncertainty_control/beta_0p003_seed_777_mc32_predictions.csv",
+      "holdout_predictions": "artifacts/earnings_bayesian_lora_final_holdout/beta_0p003_seed_777_mc32_predictions.csv"
+    }
+  ],
+  "aggregate": {
+    "epistemic_delta_downside_event_rate_vs_mean_only_mean": -0.031598508601989074,
+    "epistemic_delta_downside_event_rate_vs_mean_only_std": 0.0020316075660035213,
+    "confidence_delta_downside_event_rate_vs_mean_only_mean": -0.011048004213040058,
+    "confidence_delta_downside_event_rate_vs_mean_only_std": 0.0023988295453069844,
+    "epistemic_minus_confidence_downside_event_rate_mean": -0.02055050438894902,
+    "epistemic_beats_confidence_downside_event_rate_seed_count": 3,
+    "epistemic_minus_confidence_downside_loss_mean": -0.002578990587337463,
+    "epistemic_beats_confidence_downside_loss_seed_count": 3,
+    "epistemic_minus_confidence_mean_move_1d_mean": 0.0027678731597578763,
+    "epistemic_beats_confidence_mean_move_seed_count": 3
+  }
+}
