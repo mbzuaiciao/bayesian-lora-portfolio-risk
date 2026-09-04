@@ -1,0 +1,129 @@
+{
+  "purpose": "frozen 2024-2025 Bayesian-LoRA holdout confirmation",
+  "frozen_before_holdout": {
+    "kl_beta": 0.003,
+    "lora_r": 16,
+    "learning_rate": 0.0002,
+    "epochs": 4,
+    "mc_samples": 32,
+    "seeds": [
+      42,
+      123,
+      777
+    ],
+    "holdout_start": "2024-01-01",
+    "holdout_end": "2025-12-31"
+  },
+  "important_note": "This file contains the first inspection of the reserved 2024-2025 holdout. Do not tune the method on these results.",
+  "configs_completed": 3,
+  "configs_total": 3,
+  "complete": true,
+  "runs": [
+    {
+      "seed": 42,
+      "holdout_n": 1728,
+      "holdout_start_observed": "2024-01-04",
+      "holdout_end_observed": "2025-05-15",
+      "holdout_error_rate": 0.2621527777777778,
+      "holdout_posterior_predictive_auroc": 0.5982458384912759,
+      "epistemic_error_detection_auroc": 0.5932233909016146,
+      "confidence_error_detection_auroc": 0.5968904471280786,
+      "epistemic_minus_confidence_error_detection_auroc": -0.003667056226464016,
+      "epistemic_selective_risk_50": 0.20601851851851852,
+      "confidence_selective_risk_50": 0.21296296296296297,
+      "full_minus_epistemic_selective_risk_50": 0.05613425925925927,
+      "full_minus_confidence_selective_risk_50": 0.049189814814814825,
+      "mean_epistemic_variance": 6.752675888726508e-05,
+      "incremental_meta_model": {
+        "confidence_only": {
+          "auroc": 0.5968904471280786,
+          "log_loss": 0.562345040942575
+        },
+        "confidence_plus_epistemic": {
+          "auroc": 0.5975726096177986,
+          "log_loss": 0.5626820543362334
+        },
+        "delta_auroc": 0.000682162489719973,
+        "delta_log_loss": 0.0003370133936584363
+      },
+      "artifact": "artifacts/earnings_bayesian_lora_final_holdout/beta_0p003_seed_42_mc32.json",
+      "predictions": "artifacts/earnings_bayesian_lora_final_holdout/beta_0p003_seed_42_mc32_predictions.csv"
+    },
+    {
+      "seed": 123,
+      "holdout_n": 1728,
+      "holdout_start_observed": "2024-01-04",
+      "holdout_end_observed": "2025-05-15",
+      "holdout_error_rate": 0.26273148148148145,
+      "holdout_posterior_predictive_auroc": 0.5972465231433135,
+      "epistemic_error_detection_auroc": 0.5865237657245209,
+      "confidence_error_detection_auroc": 0.5972465231433135,
+      "epistemic_minus_confidence_error_detection_auroc": -0.010722757418792583,
+      "epistemic_selective_risk_50": 0.21064814814814814,
+      "confidence_selective_risk_50": 0.21064814814814814,
+      "full_minus_epistemic_selective_risk_50": 0.052083333333333315,
+      "full_minus_confidence_selective_risk_50": 0.052083333333333315,
+      "mean_epistemic_variance": 5.354772384628188e-05,
+      "incremental_meta_model": {
+        "confidence_only": {
+          "auroc": 0.5972465231433135,
+          "log_loss": 0.562478919433559
+        },
+        "confidence_plus_epistemic": {
+          "auroc": 0.5977340783822849,
+          "log_loss": 0.5629248201553858
+        },
+        "delta_auroc": 0.0004875552389713711,
+        "delta_log_loss": 0.0004459007218268196
+      },
+      "artifact": "artifacts/earnings_bayesian_lora_final_holdout/beta_0p003_seed_123_mc32.json",
+      "predictions": "artifacts/earnings_bayesian_lora_final_holdout/beta_0p003_seed_123_mc32_predictions.csv"
+    },
+    {
+      "seed": 777,
+      "holdout_n": 1728,
+      "holdout_start_observed": "2024-01-04",
+      "holdout_end_observed": "2025-05-15",
+      "holdout_error_rate": 0.26273148148148145,
+      "holdout_posterior_predictive_auroc": 0.5954034951832309,
+      "epistemic_error_detection_auroc": 0.593100574692771,
+      "confidence_error_detection_auroc": 0.5954034951832309,
+      "epistemic_minus_confidence_error_detection_auroc": -0.002302920490459881,
+      "epistemic_selective_risk_50": 0.2199074074074074,
+      "confidence_selective_risk_50": 0.21180555555555555,
+      "full_minus_epistemic_selective_risk_50": 0.04282407407407404,
+      "full_minus_confidence_selective_risk_50": 0.0509259259259259,
+      "mean_epistemic_variance": 3.035262930153459e-05,
+      "incremental_meta_model": {
+        "confidence_only": {
+          "auroc": 0.5954034951832309,
+          "log_loss": 0.564922245254579
+        },
+        "confidence_plus_epistemic": {
+          "auroc": 0.5952530792052504,
+          "log_loss": 0.5628842801574064
+        },
+        "delta_auroc": -0.00015041597798048922,
+        "delta_log_loss": -0.0020379650971725782
+      },
+      "artifact": "artifacts/earnings_bayesian_lora_final_holdout/beta_0p003_seed_777_mc32.json",
+      "predictions": "artifacts/earnings_bayesian_lora_final_holdout/beta_0p003_seed_777_mc32_predictions.csv"
+    }
+  ],
+  "aggregate": {
+    "epistemic_error_detection_auroc_mean": 0.5909492437729688,
+    "epistemic_error_detection_auroc_std": 0.003129687196644359,
+    "confidence_error_detection_auroc_mean": 0.5965134884848743,
+    "confidence_error_detection_auroc_std": 0.0007982319543534447,
+    "epistemic_minus_confidence_error_detection_auroc_mean": -0.005564244711905493,
+    "epistemic_beats_confidence_auc_seed_count": 0,
+    "epistemic_selective_risk_50_mean": 0.21219135802469136,
+    "confidence_selective_risk_50_mean": 0.21180555555555555,
+    "epistemic_beats_confidence_selective_risk_seed_count": 1,
+    "incremental_meta_model_delta_auroc_mean": 0.0003397672502369516,
+    "incremental_meta_model_delta_auroc_std": 0.0003556006125137545,
+    "incremental_meta_model_augmented_beats_auc_seed_count": 2,
+    "incremental_meta_model_delta_log_loss_mean": -0.0004183503272291074,
+    "incremental_meta_model_augmented_beats_log_loss_seed_count": 1
+  }
+}
