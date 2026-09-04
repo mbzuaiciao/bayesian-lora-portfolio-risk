@@ -1,0 +1,376 @@
+{
+  "purpose": "test whether epistemic allocation advantage survives concentration matching",
+  "methodological_status": "robustness analysis on already-inspected periods; not a pristine confirmatory backtest",
+  "control_design": "power-transform each rule's raw weights to match the other rule's effective number of positions; ranking is preserved and no outcomes are used to choose the power",
+  "runs": [
+    {
+      "seed": 42,
+      "periods": {
+        "2023_from_2022_calibration": {
+          "n_calibration": 1191,
+          "n_evaluation": 1181,
+          "evaluation_start": "2023-01-05",
+          "evaluation_end": "2023-12-21",
+          "matching": {
+            "original_confidence_effective_n": 1118.267709053162,
+            "original_epistemic_effective_n": 856.2993601570611,
+            "gamma_confidence_to_epistemic_effective_n": 3.362989838536323,
+            "gamma_epistemic_to_confidence_effective_n": 0.2714348088603187
+          },
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.22660987453410347,
+              "weighted_mean_move_1d": 0.002318122927321968,
+              "weighted_mean_downside_loss": 0.02135230821887183,
+              "effective_n": 1118.267709053162,
+              "max_normalized_weight": 0.0012385074414907357
+            },
+            "epistemic_adjusted": {
+              "weighted_downside_event_rate": 0.20811229422606248,
+              "weighted_mean_move_1d": 0.0035100249305764853,
+              "weighted_mean_downside_loss": 0.01963007635255018,
+              "effective_n": 856.2993601570611,
+              "max_normalized_weight": 0.0018556223889171532
+            },
+            "confidence_matched_to_epistemic_concentration": {
+              "weighted_downside_event_rate": 0.2001275798445304,
+              "weighted_mean_move_1d": 0.004195100648733271,
+              "weighted_mean_downside_loss": 0.01901707105176857,
+              "effective_n": 856.2993601570611,
+              "max_normalized_weight": 0.0025239730625640734
+            },
+            "epistemic_matched_to_confidence_concentration": {
+              "weighted_downside_event_rate": 0.22848091161983186,
+              "weighted_mean_move_1d": 0.0020906765526996856,
+              "weighted_mean_downside_loss": 0.021534567823987195,
+              "effective_n": 1118.2677090531622,
+              "max_normalized_weight": 0.001112669431846826
+            }
+          },
+          "comparison_at_epistemic_concentration": {
+            "delta_downside_event_rate_epistemic_minus_matched_confidence": 0.007984714381532088,
+            "delta_mean_move_1d_epistemic_minus_matched_confidence": -0.000685075718156786,
+            "delta_downside_loss_epistemic_minus_matched_confidence": 0.0006130053007816112
+          },
+          "comparison_at_confidence_concentration": {
+            "delta_downside_event_rate_matched_epistemic_minus_confidence": 0.0018710370857283887,
+            "delta_mean_move_1d_matched_epistemic_minus_confidence": -0.00022744637462228249,
+            "delta_downside_loss_matched_epistemic_minus_confidence": 0.00018225960511536465
+          }
+        },
+        "2024_2025_from_pre2024_calibration": {
+          "n_calibration": 2372,
+          "n_evaluation": 1728,
+          "evaluation_start": "2024-01-04",
+          "evaluation_end": "2025-05-15",
+          "matching": {
+            "original_confidence_effective_n": 1636.4003238106209,
+            "original_epistemic_effective_n": 1306.5316539272333,
+            "gamma_confidence_to_epistemic_effective_n": 3.111257735645495,
+            "gamma_epistemic_to_confidence_effective_n": 0.30762995912325597
+          },
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.24463570537234833,
+              "weighted_mean_move_1d": 0.002209154465840116,
+              "weighted_mean_downside_loss": 0.023297651726676798,
+              "effective_n": 1636.4003238106209,
+              "max_normalized_weight": 0.0008424899612762374
+            },
+            "epistemic_adjusted": {
+              "weighted_downside_event_rate": 0.22618235873634587,
+              "weighted_mean_move_1d": 0.00495406644680002,
+              "weighted_mean_downside_loss": 0.020965955149678715,
+              "effective_n": 1306.5316539272333,
+              "max_normalized_weight": 0.0011742881387904486
+            },
+            "confidence_matched_to_epistemic_concentration": {
+              "weighted_downside_event_rate": 0.22514400370359866,
+              "weighted_mean_move_1d": 0.00451177671547538,
+              "weighted_mean_downside_loss": 0.02083142294949254,
+              "effective_n": 1306.5316539272333,
+              "max_normalized_weight": 0.0015912881302500527
+            },
+            "epistemic_matched_to_confidence_concentration": {
+              "weighted_downside_event_rate": 0.24637027249081075,
+              "weighted_mean_move_1d": 0.002037235984155486,
+              "weighted_mean_downside_loss": 0.0237044412631175,
+              "effective_n": 1636.4003238106209,
+              "max_normalized_weight": 0.0007585045755115778
+            }
+          },
+          "comparison_at_epistemic_concentration": {
+            "delta_downside_event_rate_epistemic_minus_matched_confidence": 0.0010383550327472124,
+            "delta_mean_move_1d_epistemic_minus_matched_confidence": 0.00044228973132463996,
+            "delta_downside_loss_epistemic_minus_matched_confidence": 0.00013453220018617637
+          },
+          "comparison_at_confidence_concentration": {
+            "delta_downside_event_rate_matched_epistemic_minus_confidence": 0.0017345671184624267,
+            "delta_mean_move_1d_matched_epistemic_minus_confidence": -0.0001719184816846302,
+            "delta_downside_loss_matched_epistemic_minus_confidence": 0.00040678953644070204
+          }
+        }
+      }
+    },
+    {
+      "seed": 123,
+      "periods": {
+        "2023_from_2022_calibration": {
+          "n_calibration": 1191,
+          "n_evaluation": 1181,
+          "evaluation_start": "2023-01-05",
+          "evaluation_end": "2023-12-21",
+          "matching": {
+            "original_confidence_effective_n": 1112.9851496134734,
+            "original_epistemic_effective_n": 832.9170501419669,
+            "gamma_confidence_to_epistemic_effective_n": 3.453255887991154,
+            "gamma_epistemic_to_confidence_effective_n": 0.26423965675720795
+          },
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.22706542303807026,
+              "weighted_mean_move_1d": 0.002374260251471968,
+              "weighted_mean_downside_loss": 0.021325069217538455,
+              "effective_n": 1112.9851496134734,
+              "max_normalized_weight": 0.001212578779129746
+            },
+            "epistemic_adjusted": {
+              "weighted_downside_event_rate": 0.21232138852689,
+              "weighted_mean_move_1d": 0.0032624006909742482,
+              "weighted_mean_downside_loss": 0.01996878279372185,
+              "effective_n": 832.9170501419669,
+              "max_normalized_weight": 0.0018738012522904472
+            },
+            "confidence_matched_to_epistemic_concentration": {
+              "weighted_downside_event_rate": 0.20248311090051002,
+              "weighted_mean_move_1d": 0.004192764866610605,
+              "weighted_mean_downside_loss": 0.019048252273216482,
+              "effective_n": 832.9170501419671,
+              "max_normalized_weight": 0.0023624672910174584
+            },
+            "epistemic_matched_to_confidence_concentration": {
+              "weighted_downside_event_rate": 0.22985695363103573,
+              "weighted_mean_move_1d": 0.0019630675182429843,
+              "weighted_mean_downside_loss": 0.021706925937234035,
+              "effective_n": 1112.9851496134736,
+              "max_normalized_weight": 0.0011167995966440134
+            }
+          },
+          "comparison_at_epistemic_concentration": {
+            "delta_downside_event_rate_epistemic_minus_matched_confidence": 0.009838277626379982,
+            "delta_mean_move_1d_epistemic_minus_matched_confidence": -0.000930364175636357,
+            "delta_downside_loss_epistemic_minus_matched_confidence": 0.0009205305205053672
+          },
+          "comparison_at_confidence_concentration": {
+            "delta_downside_event_rate_matched_epistemic_minus_confidence": 0.002791530592965469,
+            "delta_mean_move_1d_matched_epistemic_minus_confidence": -0.0004111927332289835,
+            "delta_downside_loss_matched_epistemic_minus_confidence": 0.00038185671969558077
+          }
+        },
+        "2024_2025_from_pre2024_calibration": {
+          "n_calibration": 2372,
+          "n_evaluation": 1728,
+          "evaluation_start": "2024-01-04",
+          "evaluation_end": "2025-05-15",
+          "matching": {
+            "original_confidence_effective_n": 1629.9040129897444,
+            "original_epistemic_effective_n": 1279.0642043512796,
+            "gamma_confidence_to_epistemic_effective_n": 3.105472230804607,
+            "gamma_epistemic_to_confidence_effective_n": 0.30729958394042933
+          },
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.24403891957959978,
+              "weighted_mean_move_1d": 0.0023688949005099364,
+              "weighted_mean_downside_loss": 0.023168561541705015,
+              "effective_n": 1629.9040129897444,
+              "max_normalized_weight": 0.0008377751469931673
+            },
+            "epistemic_adjusted": {
+              "weighted_downside_event_rate": 0.22752344685324477,
+              "weighted_mean_move_1d": 0.004705286007311085,
+              "weighted_mean_downside_loss": 0.021229422186787257,
+              "effective_n": 1279.0642043512796,
+              "max_normalized_weight": 0.0012366235049923932
+            },
+            "confidence_matched_to_epistemic_concentration": {
+              "weighted_downside_event_rate": 0.2244541432399102,
+              "weighted_mean_move_1d": 0.004825129028971517,
+              "weighted_mean_downside_loss": 0.020534001373870438,
+              "effective_n": 1279.0642043512796,
+              "max_normalized_weight": 0.0015430861541489557
+            },
+            "epistemic_matched_to_confidence_concentration": {
+              "weighted_downside_event_rate": 0.2487021089363881,
+              "weighted_mean_move_1d": 0.0018549864744003674,
+              "weighted_mean_downside_loss": 0.023920342929280483,
+              "effective_n": 1629.9040129897444,
+              "max_normalized_weight": 0.0007734476725672053
+            }
+          },
+          "comparison_at_epistemic_concentration": {
+            "delta_downside_event_rate_epistemic_minus_matched_confidence": 0.003069303613334573,
+            "delta_mean_move_1d_epistemic_minus_matched_confidence": -0.00011984302166043181,
+            "delta_downside_loss_epistemic_minus_matched_confidence": 0.0006954208129168193
+          },
+          "comparison_at_confidence_concentration": {
+            "delta_downside_event_rate_matched_epistemic_minus_confidence": 0.004663189356788333,
+            "delta_mean_move_1d_matched_epistemic_minus_confidence": -0.0005139084261095691,
+            "delta_downside_loss_matched_epistemic_minus_confidence": 0.0007517813875754682
+          }
+        }
+      }
+    },
+    {
+      "seed": 777,
+      "periods": {
+        "2023_from_2022_calibration": {
+          "n_calibration": 1191,
+          "n_evaluation": 1181,
+          "evaluation_start": "2023-01-05",
+          "evaluation_end": "2023-12-21",
+          "matching": {
+            "original_confidence_effective_n": 1157.6550753056092,
+            "original_epistemic_effective_n": 846.6578329606502,
+            "gamma_confidence_to_epistemic_effective_n": 6.086172632096854,
+            "gamma_epistemic_to_confidence_effective_n": 0.13525032897799444
+          },
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.23402703049743348,
+              "weighted_mean_move_1d": 0.0015768737106836043,
+              "weighted_mean_downside_loss": 0.0220702260410012,
+              "effective_n": 1157.6550753056092,
+              "max_normalized_weight": 0.0010550203724392368
+            },
+            "epistemic_adjusted": {
+              "weighted_downside_event_rate": 0.21509004208274746,
+              "weighted_mean_move_1d": 0.0035986223602621527,
+              "weighted_mean_downside_loss": 0.01962042698475245,
+              "effective_n": 846.6578329606502,
+              "max_normalized_weight": 0.001845918182981302
+            },
+            "confidence_matched_to_epistemic_concentration": {
+              "weighted_downside_event_rate": 0.20447987581684662,
+              "weighted_mean_move_1d": 0.004105299742620644,
+              "weighted_mean_downside_loss": 0.01908573055415118,
+              "effective_n": 846.6578329606502,
+              "max_normalized_weight": 0.002536380901904715
+            },
+            "epistemic_matched_to_confidence_concentration": {
+              "weighted_downside_event_rate": 0.23613961597939423,
+              "weighted_mean_move_1d": 0.0014963312659845682,
+              "weighted_mean_downside_loss": 0.022170802440030182,
+              "effective_n": 1157.6550753056097,
+              "max_normalized_weight": 0.0009816431934726228
+            }
+          },
+          "comparison_at_epistemic_concentration": {
+            "delta_downside_event_rate_epistemic_minus_matched_confidence": 0.010610166265900833,
+            "delta_mean_move_1d_epistemic_minus_matched_confidence": -0.0005066773823584917,
+            "delta_downside_loss_epistemic_minus_matched_confidence": 0.0005346964306012711
+          },
+          "comparison_at_confidence_concentration": {
+            "delta_downside_event_rate_matched_epistemic_minus_confidence": 0.0021125854819607492,
+            "delta_mean_move_1d_matched_epistemic_minus_confidence": -8.054244469903613e-05,
+            "delta_downside_loss_matched_epistemic_minus_confidence": 0.00010057639902898152
+          }
+        },
+        "2024_2025_from_pre2024_calibration": {
+          "n_calibration": 2372,
+          "n_evaluation": 1728,
+          "evaluation_start": "2024-01-04",
+          "evaluation_end": "2025-05-15",
+          "matching": {
+            "original_confidence_effective_n": 1692.841130994207,
+            "original_epistemic_effective_n": 1259.342867104719,
+            "gamma_confidence_to_epistemic_effective_n": 5.834881470207073,
+            "gamma_epistemic_to_confidence_effective_n": 0.15400790335953546
+          },
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.25155730532756304,
+              "weighted_mean_move_1d": 0.0010016560850406313,
+              "weighted_mean_downside_loss": 0.02431532772799624,
+              "effective_n": 1692.841130994207,
+              "max_normalized_weight": 0.0007276814280978475
+            },
+            "epistemic_adjusted": {
+              "weighted_downside_event_rate": 0.22487461152307345,
+              "weighted_mean_move_1d": 0.004223972476553208,
+              "weighted_mean_downside_loss": 0.02084919189789969,
+              "effective_n": 1259.342867104719,
+              "max_normalized_weight": 0.0012243327197803669
+            },
+            "confidence_matched_to_epistemic_concentration": {
+              "weighted_downside_event_rate": 0.22343039033053635,
+              "weighted_mean_move_1d": 0.0042174351473381385,
+              "weighted_mean_downside_loss": 0.020599082875653617,
+              "effective_n": 1259.342867104719,
+              "max_normalized_weight": 0.001756915408744302
+            },
+            "epistemic_matched_to_confidence_concentration": {
+              "weighted_downside_event_rate": 0.2523351427329249,
+              "weighted_mean_move_1d": 0.0009168397591211019,
+              "weighted_mean_downside_loss": 0.024517440813751134,
+              "effective_n": 1692.8411309942073,
+              "max_normalized_weight": 0.0006766887145138451
+            }
+          },
+          "comparison_at_epistemic_concentration": {
+            "delta_downside_event_rate_epistemic_minus_matched_confidence": 0.001444221192537093,
+            "delta_mean_move_1d_epistemic_minus_matched_confidence": 6.537329215069304e-06,
+            "delta_downside_loss_epistemic_minus_matched_confidence": 0.00025010902224607487
+          },
+          "comparison_at_confidence_concentration": {
+            "delta_downside_event_rate_matched_epistemic_minus_confidence": 0.0007778374053618586,
+            "delta_mean_move_1d_matched_epistemic_minus_confidence": -8.481632591952936e-05,
+            "delta_downside_loss_matched_epistemic_minus_confidence": 0.00020211308575489306
+          }
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "2023_from_2022_calibration": {
+      "at_epistemic_concentration": {
+        "epistemic_minus_matched_confidence_downside_event_rate_mean": 0.0094777194246043,
+        "downside_event_rate_std": 0.0011017413676946855,
+        "epistemic_beats_seed_count": 0,
+        "epistemic_minus_matched_confidence_mean_move_1d_mean": -0.0007073724253838782,
+        "mean_move_epistemic_beats_seed_count": 0,
+        "epistemic_minus_matched_confidence_downside_loss_mean": 0.0006894107506294165,
+        "downside_loss_epistemic_beats_seed_count": 0
+      },
+      "at_confidence_concentration": {
+        "matched_epistemic_minus_confidence_downside_event_rate_mean": 0.0022583843868848688,
+        "downside_event_rate_std": 0.0003896751336897694,
+        "epistemic_beats_seed_count": 0,
+        "matched_epistemic_minus_confidence_mean_move_1d_mean": -0.00023972718418343404,
+        "mean_move_epistemic_beats_seed_count": 0,
+        "matched_epistemic_minus_confidence_downside_loss_mean": 0.00022156424127997565,
+        "downside_loss_epistemic_beats_seed_count": 0
+      }
+    },
+    "2024_2025_from_pre2024_calibration": {
+      "at_epistemic_concentration": {
+        "epistemic_minus_matched_confidence_downside_event_rate_mean": 0.0018506266128729594,
+        "downside_event_rate_std": 0.0008775200124997085,
+        "epistemic_beats_seed_count": 0,
+        "epistemic_minus_matched_confidence_mean_move_1d_mean": 0.00010966134629309249,
+        "mean_move_epistemic_beats_seed_count": 2,
+        "epistemic_minus_matched_confidence_downside_loss_mean": 0.0003600206784496902,
+        "downside_loss_epistemic_beats_seed_count": 0
+      },
+      "at_confidence_concentration": {
+        "matched_epistemic_minus_confidence_downside_event_rate_mean": 0.002391864626870873,
+        "downside_event_rate_std": 0.001652880305715519,
+        "epistemic_beats_seed_count": 0,
+        "matched_epistemic_minus_confidence_mean_move_1d_mean": -0.0002568810779045762,
+        "mean_move_epistemic_beats_seed_count": 0,
+        "matched_epistemic_minus_confidence_downside_loss_mean": 0.00045356133659035444,
+        "downside_loss_epistemic_beats_seed_count": 0
+      }
+    }
+  }
+}

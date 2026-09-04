@@ -1,0 +1,555 @@
+{
+  "purpose": "test epistemic uncertainty as an incremental model-risk penalty beyond confidence",
+  "methodological_status": "post-hoc robustness analysis on already-inspected periods; not a pristine confirmatory backtest",
+  "design": {
+    "baseline": "(1-p) * 2*abs(p-0.5)",
+    "augmented": "baseline * exp(-lambda * prior-period epistemic percentile)",
+    "lambda_selection": "choose lambda from fixed grid on calibration outcomes only after matching each candidate to confidence effective N",
+    "evaluation_control": "match augmented evaluation effective N to confidence using weights only, then compare outcomes"
+  },
+  "runs": [
+    {
+      "seed": 42,
+      "periods": {
+        "2023_from_2022_calibration": {
+          "n_calibration": 1191,
+          "n_evaluation": 1181,
+          "evaluation_start": "2023-01-05",
+          "evaluation_end": "2023-12-21",
+          "lambda_grid": [
+            0.0,
+            0.25,
+            0.5,
+            1.0,
+            2.0
+          ],
+          "calibration_selection": [
+            {
+              "lambda": 0.0,
+              "matching_gamma": 0.9999999999999998,
+              "weighted_downside_event_rate": 0.229255754172753,
+              "weighted_mean_move_1d": 0.004345339965294317,
+              "weighted_mean_downside_loss": 0.022164542632384637,
+              "effective_n": 1135.6406552986614,
+              "max_normalized_weight": 0.0012042277151671972
+            },
+            {
+              "lambda": 0.25,
+              "matching_gamma": 0.7753121880499669,
+              "weighted_downside_event_rate": 0.2295084060187687,
+              "weighted_mean_move_1d": 0.004163519153098106,
+              "weighted_mean_downside_loss": 0.022236197413554495,
+              "effective_n": 1135.6406552986616,
+              "max_normalized_weight": 0.001216986633469036
+            },
+            {
+              "lambda": 0.5,
+              "matching_gamma": 0.6270612664075781,
+              "weighted_downside_event_rate": 0.2298465377672894,
+              "weighted_mean_move_1d": 0.004025061426933119,
+              "weighted_mean_downside_loss": 0.022301555465597075,
+              "effective_n": 1135.6406552986616,
+              "max_normalized_weight": 0.0012203024203793714
+            },
+            {
+              "lambda": 1.0,
+              "matching_gamma": 0.44993977312738687,
+              "weighted_downside_event_rate": 0.2304177524701581,
+              "weighted_mean_move_1d": 0.0038393251036117878,
+              "weighted_mean_downside_loss": 0.022398200687730407,
+              "effective_n": 1135.6406552986614,
+              "max_normalized_weight": 0.0012199665217414305
+            },
+            {
+              "lambda": 2.0,
+              "matching_gamma": 0.28549215721516985,
+              "weighted_downside_event_rate": 0.23111554988827807,
+              "weighted_mean_move_1d": 0.0036448558987893865,
+              "weighted_mean_downside_loss": 0.022507148362143656,
+              "effective_n": 1135.6406552986616,
+              "max_normalized_weight": 0.0012159152711197808
+            }
+          ],
+          "selected_lambda": 0.0,
+          "evaluation_matching_gamma": 0.9999999999999991,
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.22660987453410347,
+              "weighted_mean_move_1d": 0.002318122927321968,
+              "weighted_mean_downside_loss": 0.02135230821887183,
+              "effective_n": 1118.267709053162,
+              "max_normalized_weight": 0.0012385074414907357
+            },
+            "confidence_plus_epistemic_model_risk_penalty": {
+              "weighted_downside_event_rate": 0.22660987453410347,
+              "weighted_mean_move_1d": 0.002318122927321967,
+              "weighted_mean_downside_loss": 0.02135230821887183,
+              "effective_n": 1118.267709053162,
+              "max_normalized_weight": 0.0012385074414907353
+            }
+          },
+          "comparison": {
+            "delta_downside_event_rate_augmented_minus_confidence": 0.0,
+            "delta_mean_move_1d_augmented_minus_confidence": -8.673617379884035e-19,
+            "delta_downside_loss_augmented_minus_confidence": 0.0
+          }
+        },
+        "2024_2025_from_pre2024_calibration": {
+          "n_calibration": 2372,
+          "n_evaluation": 1728,
+          "evaluation_start": "2024-01-04",
+          "evaluation_end": "2025-05-15",
+          "lambda_grid": [
+            0.0,
+            0.25,
+            0.5,
+            1.0,
+            2.0
+          ],
+          "calibration_selection": [
+            {
+              "lambda": 0.0,
+              "matching_gamma": 0.999999999999996,
+              "weighted_downside_event_rate": 0.22795028932430475,
+              "weighted_mean_move_1d": 0.0033451203995248113,
+              "weighted_mean_downside_loss": 0.021763789907259853,
+              "effective_n": 2253.840150014953,
+              "max_normalized_weight": 0.0006110738772051768
+            },
+            {
+              "lambda": 0.25,
+              "matching_gamma": 0.7807888229489086,
+              "weighted_downside_event_rate": 0.22818540886623062,
+              "weighted_mean_move_1d": 0.0032086406153861353,
+              "weighted_mean_downside_loss": 0.021813561228417086,
+              "effective_n": 2253.8401500149535,
+              "max_normalized_weight": 0.0006177986494708855
+            },
+            {
+              "lambda": 0.5,
+              "matching_gamma": 0.6347408940173134,
+              "weighted_downside_event_rate": 0.228496683807084,
+              "weighted_mean_move_1d": 0.0031004389376385346,
+              "weighted_mean_downside_loss": 0.021864388959902635,
+              "effective_n": 2253.8401500149525,
+              "max_normalized_weight": 0.0006197685403266245
+            },
+            {
+              "lambda": 1.0,
+              "matching_gamma": 0.4584382801915313,
+              "weighted_downside_event_rate": 0.2290233401543784,
+              "weighted_mean_move_1d": 0.0029495156679642644,
+              "weighted_mean_downside_loss": 0.021945093673869223,
+              "effective_n": 2253.8401500149535,
+              "max_normalized_weight": 0.0006199940556734647
+            },
+            {
+              "lambda": 2.0,
+              "matching_gamma": 0.29276088007678736,
+              "weighted_downside_event_rate": 0.2296718786281111,
+              "weighted_mean_move_1d": 0.002783582501600602,
+              "weighted_mean_downside_loss": 0.02204289861863577,
+              "effective_n": 2253.8401500149535,
+              "max_normalized_weight": 0.0006182998513370959
+            }
+          ],
+          "selected_lambda": 0.0,
+          "evaluation_matching_gamma": 0.9999999999999973,
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.24463570537234833,
+              "weighted_mean_move_1d": 0.002209154465840116,
+              "weighted_mean_downside_loss": 0.023297651726676798,
+              "effective_n": 1636.4003238106209,
+              "max_normalized_weight": 0.0008424899612762374
+            },
+            "confidence_plus_epistemic_model_risk_penalty": {
+              "weighted_downside_event_rate": 0.2446357053723484,
+              "weighted_mean_move_1d": 0.0022091544658401113,
+              "weighted_mean_downside_loss": 0.023297651726676805,
+              "effective_n": 1636.4003238106209,
+              "max_normalized_weight": 0.0008424899612762368
+            }
+          },
+          "comparison": {
+            "delta_downside_event_rate_augmented_minus_confidence": 8.326672684688674e-17,
+            "delta_mean_move_1d_augmented_minus_confidence": -4.7704895589362195e-18,
+            "delta_downside_loss_augmented_minus_confidence": 6.938893903907228e-18
+          }
+        }
+      }
+    },
+    {
+      "seed": 123,
+      "periods": {
+        "2023_from_2022_calibration": {
+          "n_calibration": 1191,
+          "n_evaluation": 1181,
+          "evaluation_start": "2023-01-05",
+          "evaluation_end": "2023-12-21",
+          "lambda_grid": [
+            0.0,
+            0.25,
+            0.5,
+            1.0,
+            2.0
+          ],
+          "calibration_selection": [
+            {
+              "lambda": 0.0,
+              "matching_gamma": 0.9999999999999971,
+              "weighted_downside_event_rate": 0.23006861272647225,
+              "weighted_mean_move_1d": 0.004142249212005344,
+              "weighted_mean_downside_loss": 0.022172929809177164,
+              "effective_n": 1133.1233805790332,
+              "max_normalized_weight": 0.0011962973199025945
+            },
+            {
+              "lambda": 0.25,
+              "matching_gamma": 0.7790587579730006,
+              "weighted_downside_event_rate": 0.23037406472690006,
+              "weighted_mean_move_1d": 0.004014832862145921,
+              "weighted_mean_downside_loss": 0.022217361815323234,
+              "effective_n": 1133.1233805790337,
+              "max_normalized_weight": 0.0012136690770826026
+            },
+            {
+              "lambda": 0.5,
+              "matching_gamma": 0.6322619723690142,
+              "weighted_downside_event_rate": 0.2307353852186964,
+              "weighted_mean_move_1d": 0.003911702978725073,
+              "weighted_mean_downside_loss": 0.022266054124656945,
+              "effective_n": 1133.1233805790332,
+              "max_normalized_weight": 0.001220147671223556
+            },
+            {
+              "lambda": 1.0,
+              "matching_gamma": 0.4556666137903065,
+              "weighted_downside_event_rate": 0.23133091761236987,
+              "weighted_mean_move_1d": 0.0037663104697533713,
+              "weighted_mean_downside_loss": 0.022344782268356792,
+              "effective_n": 1133.1233805790332,
+              "max_normalized_weight": 0.0012236162094305474
+            },
+            {
+              "lambda": 2.0,
+              "matching_gamma": 0.2903588072683646,
+              "weighted_downside_event_rate": 0.2320590441397528,
+              "weighted_mean_move_1d": 0.0036057446995181788,
+              "weighted_mean_downside_loss": 0.02244021558997588,
+              "effective_n": 1133.1233805790337,
+              "max_normalized_weight": 0.0012229896239551658
+            }
+          ],
+          "selected_lambda": 0.0,
+          "evaluation_matching_gamma": 0.9999999999999982,
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.22706542303807026,
+              "weighted_mean_move_1d": 0.002374260251471968,
+              "weighted_mean_downside_loss": 0.021325069217538455,
+              "effective_n": 1112.9851496134734,
+              "max_normalized_weight": 0.001212578779129746
+            },
+            "confidence_plus_epistemic_model_risk_penalty": {
+              "weighted_downside_event_rate": 0.22706542303807026,
+              "weighted_mean_move_1d": 0.0023742602514719648,
+              "weighted_mean_downside_loss": 0.021325069217538455,
+              "effective_n": 1112.985149613474,
+              "max_normalized_weight": 0.0012125787791297453
+            }
+          },
+          "comparison": {
+            "delta_downside_event_rate_augmented_minus_confidence": 0.0,
+            "delta_mean_move_1d_augmented_minus_confidence": -3.0357660829594124e-18,
+            "delta_downside_loss_augmented_minus_confidence": 0.0
+          }
+        },
+        "2024_2025_from_pre2024_calibration": {
+          "n_calibration": 2372,
+          "n_evaluation": 1728,
+          "evaluation_start": "2024-01-04",
+          "evaluation_end": "2025-05-15",
+          "lambda_grid": [
+            0.0,
+            0.25,
+            0.5,
+            1.0,
+            2.0
+          ],
+          "calibration_selection": [
+            {
+              "lambda": 0.0,
+              "matching_gamma": 0.9999999999999982,
+              "weighted_downside_event_rate": 0.22858430122992962,
+              "weighted_mean_move_1d": 0.003268429502909135,
+              "weighted_mean_downside_loss": 0.021753878948522265,
+              "effective_n": 2246.093990591749,
+              "max_normalized_weight": 0.0006050333474428958
+            },
+            {
+              "lambda": 0.25,
+              "matching_gamma": 0.7871206965869226,
+              "weighted_downside_event_rate": 0.22899830097953486,
+              "weighted_mean_move_1d": 0.0031407667022619757,
+              "weighted_mean_downside_loss": 0.021811732307423715,
+              "effective_n": 2246.0939905917494,
+              "max_normalized_weight": 0.0006149441173133052
+            },
+            {
+              "lambda": 0.5,
+              "matching_gamma": 0.6433327576612495,
+              "weighted_downside_event_rate": 0.2294128762086197,
+              "weighted_mean_move_1d": 0.003038332098755672,
+              "weighted_mean_downside_loss": 0.0218677286109608,
+              "effective_n": 2246.093990591749,
+              "max_normalized_weight": 0.000619108478679941
+            },
+            {
+              "lambda": 1.0,
+              "matching_gamma": 0.46758977046957895,
+              "weighted_downside_event_rate": 0.2300557636434603,
+              "weighted_mean_move_1d": 0.0028938240469765578,
+              "weighted_mean_downside_loss": 0.02195476360077534,
+              "effective_n": 2246.0939905917485,
+              "max_normalized_weight": 0.0006219456129316829
+            },
+            {
+              "lambda": 2.0,
+              "matching_gamma": 0.3002862998379946,
+              "weighted_downside_event_rate": 0.2308110136617858,
+              "weighted_mean_move_1d": 0.0027333892376327955,
+              "weighted_mean_downside_loss": 0.0220585323367275,
+              "effective_n": 2246.093990591749,
+              "max_normalized_weight": 0.00062256843517821
+            }
+          ],
+          "selected_lambda": 0.0,
+          "evaluation_matching_gamma": 0.9999999999999982,
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.24403891957959978,
+              "weighted_mean_move_1d": 0.0023688949005099364,
+              "weighted_mean_downside_loss": 0.023168561541705015,
+              "effective_n": 1629.9040129897444,
+              "max_normalized_weight": 0.0008377751469931673
+            },
+            "confidence_plus_epistemic_model_risk_penalty": {
+              "weighted_downside_event_rate": 0.24403891957959983,
+              "weighted_mean_move_1d": 0.0023688949005099334,
+              "weighted_mean_downside_loss": 0.02316856154170502,
+              "effective_n": 1629.9040129897444,
+              "max_normalized_weight": 0.0008377751469931668
+            }
+          },
+          "comparison": {
+            "delta_downside_event_rate_augmented_minus_confidence": 5.551115123125783e-17,
+            "delta_mean_move_1d_augmented_minus_confidence": -3.0357660829594124e-18,
+            "delta_downside_loss_augmented_minus_confidence": 3.469446951953614e-18
+          }
+        }
+      }
+    },
+    {
+      "seed": 777,
+      "periods": {
+        "2023_from_2022_calibration": {
+          "n_calibration": 1191,
+          "n_evaluation": 1181,
+          "evaluation_start": "2023-01-05",
+          "evaluation_end": "2023-12-21",
+          "lambda_grid": [
+            0.0,
+            0.25,
+            0.5,
+            1.0,
+            2.0
+          ],
+          "calibration_selection": [
+            {
+              "lambda": 0.0,
+              "matching_gamma": 0.999999999999998,
+              "weighted_downside_event_rate": 0.23665137604207875,
+              "weighted_mean_move_1d": 0.003324057639387923,
+              "weighted_mean_downside_loss": 0.022984159486178775,
+              "effective_n": 1170.8654977550282,
+              "max_normalized_weight": 0.0010235496170724935
+            },
+            {
+              "lambda": 0.25,
+              "matching_gamma": 0.6702915124113829,
+              "weighted_downside_event_rate": 0.23665406665649064,
+              "weighted_mean_move_1d": 0.00328897710227352,
+              "weighted_mean_downside_loss": 0.022991558991189643,
+              "effective_n": 1170.8654977550282,
+              "max_normalized_weight": 0.0010388436647525785
+            },
+            {
+              "lambda": 0.5,
+              "matching_gamma": 0.4964571109832313,
+              "weighted_downside_event_rate": 0.23680364277344068,
+              "weighted_mean_move_1d": 0.0032516548645100595,
+              "weighted_mean_downside_loss": 0.02301191123600955,
+              "effective_n": 1170.865497755028,
+              "max_normalized_weight": 0.0010434656193455331
+            },
+            {
+              "lambda": 1.0,
+              "matching_gamma": 0.3239407324737189,
+              "weighted_downside_event_rate": 0.23704491579859965,
+              "weighted_mean_move_1d": 0.003202331217500562,
+              "weighted_mean_downside_loss": 0.02304254477433918,
+              "effective_n": 1170.865497755028,
+              "max_normalized_weight": 0.0010457513602249839
+            },
+            {
+              "lambda": 2.0,
+              "matching_gamma": 0.18996206880803373,
+              "weighted_downside_event_rate": 0.23729663935484635,
+              "weighted_mean_move_1d": 0.0031553111091201895,
+              "weighted_mean_downside_loss": 0.023073620373860182,
+              "effective_n": 1170.865497755028,
+              "max_normalized_weight": 0.0010460158628744394
+            }
+          ],
+          "selected_lambda": 0.0,
+          "evaluation_matching_gamma": 0.9999999999999947,
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.23402703049743348,
+              "weighted_mean_move_1d": 0.0015768737106836043,
+              "weighted_mean_downside_loss": 0.0220702260410012,
+              "effective_n": 1157.6550753056092,
+              "max_normalized_weight": 0.0010550203724392368
+            },
+            "confidence_plus_epistemic_model_risk_penalty": {
+              "weighted_downside_event_rate": 0.2340270304974335,
+              "weighted_mean_move_1d": 0.0015768737106836004,
+              "weighted_mean_downside_loss": 0.0220702260410012,
+              "effective_n": 1157.6550753056094,
+              "max_normalized_weight": 0.0010550203724392357
+            }
+          },
+          "comparison": {
+            "delta_downside_event_rate_augmented_minus_confidence": 2.7755575615628914e-17,
+            "delta_mean_move_1d_augmented_minus_confidence": -3.903127820947816e-18,
+            "delta_downside_loss_augmented_minus_confidence": 0.0
+          }
+        },
+        "2024_2025_from_pre2024_calibration": {
+          "n_calibration": 2372,
+          "n_evaluation": 1728,
+          "evaluation_start": "2024-01-04",
+          "evaluation_end": "2025-05-15",
+          "lambda_grid": [
+            0.0,
+            0.25,
+            0.5,
+            1.0,
+            2.0
+          ],
+          "calibration_selection": [
+            {
+              "lambda": 0.0,
+              "matching_gamma": 0.9999999999999991,
+              "weighted_downside_event_rate": 0.23535043854284618,
+              "weighted_mean_move_1d": 0.0024579456689022626,
+              "weighted_mean_downside_loss": 0.022531105469317192,
+              "effective_n": 2328.501137595461,
+              "max_normalized_weight": 0.0005229934631744789
+            },
+            {
+              "lambda": 0.25,
+              "matching_gamma": 0.6797031588611699,
+              "weighted_downside_event_rate": 0.2355647924617595,
+              "weighted_mean_move_1d": 0.0024017430491527878,
+              "weighted_mean_downside_loss": 0.022553737833037046,
+              "effective_n": 2328.50113759546,
+              "max_normalized_weight": 0.0005271640865402165
+            },
+            {
+              "lambda": 0.5,
+              "matching_gamma": 0.5071703863104995,
+              "weighted_downside_event_rate": 0.23580099986531147,
+              "weighted_mean_move_1d": 0.00235591906946912,
+              "weighted_mean_downside_loss": 0.02258078926036266,
+              "effective_n": 2328.5011375954605,
+              "max_normalized_weight": 0.0005293769582508553
+            },
+            {
+              "lambda": 1.0,
+              "matching_gamma": 0.33332404610469557,
+              "weighted_downside_event_rate": 0.23611556004707254,
+              "weighted_mean_move_1d": 0.002299324838759285,
+              "weighted_mean_downside_loss": 0.022617693657906706,
+              "effective_n": 2328.50113759546,
+              "max_normalized_weight": 0.0005303803504951556
+            },
+            {
+              "lambda": 2.0,
+              "matching_gamma": 0.1965352256210619,
+              "weighted_downside_event_rate": 0.2364165377586765,
+              "weighted_mean_move_1d": 0.0022472747928233812,
+              "weighted_mean_downside_loss": 0.022653562977421653,
+              "effective_n": 2328.5011375954605,
+              "max_normalized_weight": 0.0005303559290693929
+            }
+          ],
+          "selected_lambda": 0.0,
+          "evaluation_matching_gamma": 0.9999999999999913,
+          "metrics": {
+            "confidence_adjusted": {
+              "weighted_downside_event_rate": 0.25155730532756304,
+              "weighted_mean_move_1d": 0.0010016560850406313,
+              "weighted_mean_downside_loss": 0.02431532772799624,
+              "effective_n": 1692.841130994207,
+              "max_normalized_weight": 0.0007276814280978475
+            },
+            "confidence_plus_epistemic_model_risk_penalty": {
+              "weighted_downside_event_rate": 0.25155730532756315,
+              "weighted_mean_move_1d": 0.00100165608504062,
+              "weighted_mean_downside_loss": 0.02431532772799625,
+              "effective_n": 1692.841130994207,
+              "max_normalized_weight": 0.0007276814280978462
+            }
+          },
+          "comparison": {
+            "delta_downside_event_rate_augmented_minus_confidence": 1.1102230246251565e-16,
+            "delta_mean_move_1d_augmented_minus_confidence": -1.1275702593849246e-17,
+            "delta_downside_loss_augmented_minus_confidence": 1.0408340855860843e-17
+          }
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "2023_from_2022_calibration": {
+      "selected_lambdas": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "delta_downside_event_rate_mean": 9.25185853854297e-18,
+      "delta_downside_event_rate_std": 1.3084103822364792e-17,
+      "augmented_beats_confidence_downside_event_rate_seed_count": 0,
+      "delta_mean_move_1d_mean": -2.6020852139652106e-18,
+      "augmented_beats_confidence_mean_move_seed_count": 0,
+      "delta_downside_loss_mean": 0.0,
+      "augmented_beats_confidence_downside_loss_seed_count": 0
+    },
+    "2024_2025_from_pre2024_calibration": {
+      "selected_lambdas": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "delta_downside_event_rate_mean": 8.326672684688674e-17,
+      "delta_downside_event_rate_std": 2.2662332591841973e-17,
+      "augmented_beats_confidence_downside_event_rate_seed_count": 0,
+      "delta_mean_move_1d_mean": -6.3606527452482924e-18,
+      "augmented_beats_confidence_mean_move_seed_count": 0,
+      "delta_downside_loss_mean": 6.938893903907228e-18,
+      "augmented_beats_confidence_downside_loss_seed_count": 0
+    }
+  }
+}
