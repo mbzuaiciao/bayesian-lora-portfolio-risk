@@ -4,17 +4,18 @@ Research repository studying whether epistemic uncertainty from Bayesian LoRA on
 
 ## Current research result
 
-The project now has a fairly clear empirical result on the earnings-event task:
+The earnings-event study now supports a fairly clear negative result:
 
 1. The deterministic text signal is useful.
-2. Bayesian epistemic uncertainty is reproducibly higher on harder / more error-prone examples.
+2. Bayesian epistemic uncertainty is reproducibly associated with harder / more error-prone examples.
 3. Ordinary classifier confidence is at least as useful for error detection.
 4. An apparent allocation advantage from epistemic sizing disappears after matching portfolio concentration.
 5. When epistemic uncertainty is added as a separate model-risk penalty on top of confidence, the selected penalty strength is zero across all tested seeds and time periods.
+6. Targeted distribution-shift tests on unseen companies, sparse-history companies, and underrepresented sectors do not show robust incremental value beyond confidence.
 
 The current conclusion is therefore:
 
-> Epistemic uncertainty is diagnostically meaningful, but in this setup it does not provide clear incremental decision value beyond ordinary confidence.
+> Bayesian-LoRA epistemic uncertainty is diagnostically meaningful, but in this financial earnings-event task ordinary deterministic confidence captures essentially all of the practically useful information tested here.
 
 This is treated as a controlled negative result rather than as evidence that Bayesian uncertainty is never useful.
 
@@ -52,18 +53,28 @@ Downstream exploratory analyses include:
 
 The concentration and model-risk controls are important falsification tests: they show that the apparent economic advantage of epistemic sizing is not robust once ordinary confidence and portfolio concentration are properly controlled.
 
-## Next question
+### Distribution-shift tests
 
-The next hypothesis is whether epistemic uncertainty becomes incrementally useful under genuine distribution shift, for example:
+The final robustness stage tested whether epistemic uncertainty becomes more useful under forms of model unfamiliarity.
 
-- unseen companies or sectors,
-- regime shifts,
-- sparse-data subsets,
-- temporally distant evaluation windows,
-- document-source or style shifts.
+- **Strict unseen companies:** a small positive 2024-2025 hint, but only 35 examples per seed and mixed earlier-period evidence.
+- **Sparse-history companies:** mixed results; the positive hint did not remain stable when the subgroup was broadened.
+- **Underrepresented sectors:** the largest shift subgroup, with 133 examples per seed in 2023 and 204 per seed in 2024-2025, produced a clear negative result. Confidence remained stronger overall, and adding epistemic uncertainty did not improve the error meta-model consistently.
 
-Any such experiment should test epistemic uncertainty against ordinary confidence directly and should be pre-specified before inspecting outcomes.
+Further subgroup search is intentionally stopped here to avoid post-hoc subgroup fishing.
+
+## Interpretation
+
+The result is narrower and more useful than either “Bayesian uncertainty works” or “Bayesian uncertainty is useless.”
+
+In this setup, Bayesian parameter uncertainty contains a real diagnostic signal, but that signal appears largely redundant with ordinary predictive confidence for the downstream decisions and distribution shifts tested.
+
+A genuinely new follow-up should therefore use a separately pre-specified task or dataset with a stronger external shift, rather than continuing to slice the existing sample.
 
 ## Repository guide
 
-See `docs/research_spec.md` for the full research framing and current conclusions. Small reproducible result summaries are tracked under `results/`; large prediction files and checkpoints remain local artifacts.
+- `docs/research_spec.md` — full research framing and experiment chain.
+- `docs/distribution_shift_results.md` — consolidated distribution-shift evidence and stopping rationale.
+- `results/` — small reproducible result summaries.
+
+Large prediction files and checkpoints remain local artifacts.
