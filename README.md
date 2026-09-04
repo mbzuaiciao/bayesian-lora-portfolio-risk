@@ -1,38 +1,69 @@
 # Bayesian LoRA Portfolio Risk
 
-Research repository for studying whether epistemic uncertainty from Bayesian LoRA on financial text can improve downstream portfolio risk decisions beyond deterministic NLP signals.
+Research repository studying whether epistemic uncertainty from Bayesian LoRA on financial text improves downstream financial-risk decisions beyond deterministic model confidence.
 
-## Milestone 0: uncertainty before portfolios
+## Current research result
 
-The first milestone deliberately excludes portfolio optimization. We first test whether Bayesian LoRA produces useful uncertainty on a timestamped financial-text prediction task.
+The project now has a fairly clear empirical result on the earnings-event task:
 
-Success requires:
+1. The deterministic text signal is useful.
+2. Bayesian epistemic uncertainty is reproducibly higher on harder / more error-prone examples.
+3. Ordinary classifier confidence is at least as useful for error detection.
+4. An apparent allocation advantage from epistemic sizing disappears after matching portfolio concentration.
+5. When epistemic uncertainty is added as a separate model-risk penalty on top of confidence, the selected penalty strength is zero across all tested seeds and time periods.
 
-1. Comparable predictive performance to standard LoRA.
-2. Better probabilistic calibration.
-3. Higher uncertainty on examples the model gets wrong.
-4. Higher uncertainty under temporal or domain distribution shift.
+The current conclusion is therefore:
 
-Only after these conditions hold do we use the uncertainty signal to adjust classical portfolio risk estimates.
+> Epistemic uncertainty is diagnostically meaningful, but in this setup it does not provide clear incremental decision value beyond ordinary confidence.
 
-## Initial comparison
+This is treated as a controlled negative result rather than as evidence that Bayesian uncertainty is never useful.
 
-- Standard LoRA
-- Bayesian LoRA
-- Same base model
-- Same training data
-- Same financial prediction target
-- In-distribution and shifted test sets
+## Experimental progression
 
-## Key evaluation metrics
+### FNSPID pilot
 
-- Accuracy / F1
-- Negative log likelihood
-- Brier score
-- Expected calibration error
-- Reliability curves
-- Risk-coverage / selective prediction
-- Error-vs-uncertainty relationship
-- Uncertainty shift between in-distribution and out-of-distribution data
+The initial asset-day news formulation was rejected because text did not add robust information beyond structured market features after controlling for ticker and volatility effects.
 
-See `docs/research_spec.md` for the full research framing and `experiments/milestone_00/README.md` for the first experiment contract.
+### Earnings-event task
+
+The project then moved to long-form earnings documents with a fixed downside-event target. This task passed the deterministic information gate and supported standard-LoRA and Bayesian-LoRA experiments.
+
+### Bayesian uncertainty tests
+
+The analysis includes:
+
+- posterior predictive evaluation,
+- calibration metrics,
+- error-vs-uncertainty diagnostics,
+- selective-risk analysis,
+- multi-seed replication,
+- confidence controls,
+- incremental-value tests,
+- later-period holdout evaluation.
+
+### Economic decision tests
+
+Downstream exploratory analyses include:
+
+- equal-gross event-risk allocation,
+- rolling temporal robustness,
+- concentration matching,
+- incremental epistemic model-risk penalties.
+
+The concentration and model-risk controls are important falsification tests: they show that the apparent economic advantage of epistemic sizing is not robust once ordinary confidence and portfolio concentration are properly controlled.
+
+## Next question
+
+The next hypothesis is whether epistemic uncertainty becomes incrementally useful under genuine distribution shift, for example:
+
+- unseen companies or sectors,
+- regime shifts,
+- sparse-data subsets,
+- temporally distant evaluation windows,
+- document-source or style shifts.
+
+Any such experiment should test epistemic uncertainty against ordinary confidence directly and should be pre-specified before inspecting outcomes.
+
+## Repository guide
+
+See `docs/research_spec.md` for the full research framing and current conclusions. Small reproducible result summaries are tracked under `results/`; large prediction files and checkpoints remain local artifacts.
