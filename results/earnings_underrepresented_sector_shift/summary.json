@@ -1,0 +1,268 @@
+{
+  "purpose": "pre-specified underrepresented-sector distribution-shift test",
+  "shift_definition": "sector pre-2022 episode count at or below the 25th percentile across non-empty sectors",
+  "sector_quantile": 0.25,
+  "pre2022_sector_count": 11,
+  "pre2022_sector_episode_count_quantile_threshold": 727.0,
+  "underrepresented_sectors": [
+    "Basic Materials",
+    "Communication Services",
+    "Energy"
+  ],
+  "well_represented_sector_count": 8,
+  "primary_criterion": "epistemic uncertainty must add out-of-sample error-prediction information beyond confidence on underrepresented sectors",
+  "methodological_status": "targeted robustness/shift analysis; sector-frequency rule fixed before subgroup outcomes, but underlying dates were previously inspected",
+  "runs": [
+    {
+      "seed": 42,
+      "2023": {
+        "well_represented": {
+          "n": 1048,
+          "unique_symbols": 268,
+          "unique_sectors": 8,
+          "error_rate": 0.23282442748091603,
+          "mean_epistemic_variance": 7.529378732095801e-05,
+          "mean_confidence_uncertainty": 0.3771981211085466,
+          "epistemic_error_detection_auroc": 0.5836748633879781,
+          "confidence_error_detection_auroc": 0.6086626294755729,
+          "epistemic_minus_confidence_error_detection_auroc": -0.024987766087594787
+        },
+        "underrepresented": {
+          "n": 133,
+          "unique_symbols": 34,
+          "unique_sectors": 3,
+          "error_rate": 0.3082706766917293,
+          "mean_epistemic_variance": 7.141975788648241e-05,
+          "mean_confidence_uncertainty": 0.35778603501376327,
+          "epistemic_error_detection_auroc": 0.5766171792152704,
+          "confidence_error_detection_auroc": 0.5898727465535525,
+          "epistemic_minus_confidence_error_detection_auroc": -0.013255567338282037
+        },
+        "incremental_meta_model_well_2022_to_underrepresented_2023": {
+          "status": "ok",
+          "train_n": 1058,
+          "test_n": 133,
+          "confidence_only_auroc": 0.5898727465535525,
+          "confidence_plus_epistemic_auroc": 0.5813891834570519,
+          "delta_auroc": -0.008483563096500557,
+          "confidence_only_log_loss": 0.6237491759119957,
+          "confidence_plus_epistemic_log_loss": 0.6227172329489117,
+          "delta_log_loss": -0.0010319429630840649
+        }
+      },
+      "2024_2025": {
+        "well_represented": {
+          "n": 1524,
+          "unique_symbols": 266,
+          "unique_sectors": 8,
+          "error_rate": 0.25984251968503935,
+          "mean_epistemic_variance": 6.77811808548027e-05,
+          "mean_confidence_uncertainty": 0.3715196691136141,
+          "epistemic_error_detection_auroc": 0.5929104878572964,
+          "confidence_error_detection_auroc": 0.5959909377462569,
+          "epistemic_minus_confidence_error_detection_auroc": -0.0030804498889605014
+        },
+        "underrepresented": {
+          "n": 204,
+          "unique_symbols": 35,
+          "unique_sectors": 3,
+          "error_rate": 0.27941176470588236,
+          "mean_epistemic_variance": 6.562607712977824e-05,
+          "mean_confidence_uncertainty": 0.36542630243382196,
+          "epistemic_error_detection_auroc": 0.5890917770617018,
+          "confidence_error_detection_auroc": 0.6006683375104428,
+          "epistemic_minus_confidence_error_detection_auroc": -0.011576560448741002
+        },
+        "incremental_meta_model_well_pre2024_to_underrepresented_2024_2025": {
+          "status": "ok",
+          "train_n": 2106,
+          "test_n": 204,
+          "confidence_only_auroc": 0.6006683375104428,
+          "confidence_plus_epistemic_auroc": 0.6034132951426184,
+          "delta_auroc": 0.0027449576321756375,
+          "confidence_only_log_loss": 0.5829061725434688,
+          "confidence_plus_epistemic_log_loss": 0.5834689718524512,
+          "delta_log_loss": 0.0005627993089823979
+        }
+      }
+    },
+    {
+      "seed": 123,
+      "2023": {
+        "well_represented": {
+          "n": 1048,
+          "unique_symbols": 268,
+          "unique_sectors": 8,
+          "error_rate": 0.23377862595419846,
+          "mean_epistemic_variance": 5.678835898093994e-05,
+          "mean_confidence_uncertainty": 0.3920916407517188,
+          "epistemic_error_detection_auroc": 0.573233029201718,
+          "confidence_error_detection_auroc": 0.6048745774773172,
+          "epistemic_minus_confidence_error_detection_auroc": -0.031641548275599174
+        },
+        "underrepresented": {
+          "n": 133,
+          "unique_symbols": 34,
+          "unique_sectors": 3,
+          "error_rate": 0.3082706766917293,
+          "mean_epistemic_variance": 5.384655002323235e-05,
+          "mean_confidence_uncertainty": 0.36616578728881405,
+          "epistemic_error_detection_auroc": 0.5660127253446448,
+          "confidence_error_detection_auroc": 0.5752916224814422,
+          "epistemic_minus_confidence_error_detection_auroc": -0.009278897136797415
+        },
+        "incremental_meta_model_well_2022_to_underrepresented_2023": {
+          "status": "ok",
+          "train_n": 1058,
+          "test_n": 133,
+          "confidence_only_auroc": 0.5752916224814422,
+          "confidence_plus_epistemic_auroc": 0.5734358430540827,
+          "delta_auroc": -0.001855779427359483,
+          "confidence_only_log_loss": 0.6279943235300348,
+          "confidence_plus_epistemic_log_loss": 0.6281444076853446,
+          "delta_log_loss": 0.00015008415530981534
+        }
+      },
+      "2024_2025": {
+        "well_represented": {
+          "n": 1524,
+          "unique_symbols": 266,
+          "unique_sectors": 8,
+          "error_rate": 0.260498687664042,
+          "mean_epistemic_variance": 5.3421548941664445e-05,
+          "mean_confidence_uncertainty": 0.3897803667739232,
+          "epistemic_error_detection_auroc": 0.5886294502468603,
+          "confidence_error_detection_auroc": 0.5978534662139964,
+          "epistemic_minus_confidence_error_detection_auroc": -0.009224015967136068
+        },
+        "underrepresented": {
+          "n": 204,
+          "unique_symbols": 35,
+          "unique_sectors": 3,
+          "error_rate": 0.27941176470588236,
+          "mean_epistemic_variance": 5.449032460430623e-05,
+          "mean_confidence_uncertainty": 0.3793651715649164,
+          "epistemic_error_detection_auroc": 0.5690416517484187,
+          "confidence_error_detection_auroc": 0.5947010383100608,
+          "epistemic_minus_confidence_error_detection_auroc": -0.025659386561642128
+        },
+        "incremental_meta_model_well_pre2024_to_underrepresented_2024_2025": {
+          "status": "ok",
+          "train_n": 2106,
+          "test_n": 204,
+          "confidence_only_auroc": 0.5947010383100608,
+          "confidence_plus_epistemic_auroc": 0.5932688865019692,
+          "delta_auroc": -0.0014321518080916418,
+          "confidence_only_log_loss": 0.5825088389887169,
+          "confidence_plus_epistemic_log_loss": 0.582759947185817,
+          "delta_log_loss": 0.0002511081971001694
+        }
+      }
+    },
+    {
+      "seed": 777,
+      "2023": {
+        "well_represented": {
+          "n": 1048,
+          "unique_symbols": 268,
+          "unique_sectors": 8,
+          "error_rate": 0.23377862595419846,
+          "mean_epistemic_variance": 3.132935799736848e-05,
+          "mean_confidence_uncertainty": 0.2838255876485888,
+          "epistemic_error_detection_auroc": 0.5684092815208275,
+          "confidence_error_detection_auroc": 0.5976821612829442,
+          "epistemic_minus_confidence_error_detection_auroc": -0.029272879762116677
+        },
+        "underrepresented": {
+          "n": 133,
+          "unique_symbols": 34,
+          "unique_sectors": 3,
+          "error_rate": 0.3082706766917293,
+          "mean_epistemic_variance": 2.9190983685351365e-05,
+          "mean_confidence_uncertainty": 0.2685909730100415,
+          "epistemic_error_detection_auroc": 0.5689289501590669,
+          "confidence_error_detection_auroc": 0.6086956521739132,
+          "epistemic_minus_confidence_error_detection_auroc": -0.039766702014846333
+        },
+        "incremental_meta_model_well_2022_to_underrepresented_2023": {
+          "status": "ok",
+          "train_n": 1058,
+          "test_n": 133,
+          "confidence_only_auroc": 0.6086956521739132,
+          "confidence_plus_epistemic_auroc": 0.5721102863202545,
+          "delta_auroc": -0.03658536585365868,
+          "confidence_only_log_loss": 0.621861829307857,
+          "confidence_plus_epistemic_log_loss": 0.6245957859941356,
+          "delta_log_loss": 0.002733956686278516
+        }
+      },
+      "2024_2025": {
+        "well_represented": {
+          "n": 1524,
+          "unique_symbols": 266,
+          "unique_sectors": 8,
+          "error_rate": 0.260498687664042,
+          "mean_epistemic_variance": 3.0201960181711732e-05,
+          "mean_confidence_uncertainty": 0.2840717443766278,
+          "epistemic_error_detection_auroc": 0.5977014833969948,
+          "confidence_error_detection_auroc": 0.5978445260482903,
+          "epistemic_minus_confidence_error_detection_auroc": -0.00014304265129549965
+        },
+        "underrepresented": {
+          "n": 204,
+          "unique_symbols": 35,
+          "unique_sectors": 3,
+          "error_rate": 0.27941176470588236,
+          "mean_epistemic_variance": 3.1478216255505344e-05,
+          "mean_confidence_uncertainty": 0.2744799795533146,
+          "epistemic_error_detection_auroc": 0.5568683613796395,
+          "confidence_error_detection_auroc": 0.5813342881012054,
+          "epistemic_minus_confidence_error_detection_auroc": -0.02446592672156589
+        },
+        "incremental_meta_model_well_pre2024_to_underrepresented_2024_2025": {
+          "status": "ok",
+          "train_n": 2106,
+          "test_n": 204,
+          "confidence_only_auroc": 0.5813342881012054,
+          "confidence_plus_epistemic_auroc": 0.5697577276524646,
+          "delta_auroc": -0.01157656044874078,
+          "confidence_only_log_loss": 0.5881586458306716,
+          "confidence_plus_epistemic_log_loss": 0.5889650306030118,
+          "delta_log_loss": 0.0008063847723401851
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "2023": {
+      "underrepresented_n_per_seed": [
+        133,
+        133,
+        133
+      ],
+      "epistemic_minus_confidence_error_detection_auroc_mean": -0.02076705549664193,
+      "epistemic_minus_confidence_error_detection_auroc_std": 0.013532513990026182,
+      "epistemic_beats_confidence_error_detection_seed_count": 0,
+      "incremental_meta_model_delta_auroc_mean": -0.015641569459172906,
+      "incremental_meta_model_delta_auroc_std": 0.015054652318613223,
+      "incremental_meta_model_delta_log_loss_mean": 0.0006173659595014221,
+      "incremental_epistemic_beats_auc_seed_count": 0,
+      "incremental_epistemic_beats_log_loss_seed_count": 1
+    },
+    "2024_2025": {
+      "underrepresented_n_per_seed": [
+        204,
+        204,
+        204
+      ],
+      "epistemic_minus_confidence_error_detection_auroc_mean": -0.020567291243983005,
+      "epistemic_minus_confidence_error_detection_auroc_std": 0.00637604981012818,
+      "epistemic_beats_confidence_error_detection_seed_count": 0,
+      "incremental_meta_model_delta_auroc_mean": -0.0034212515415522615,
+      "incremental_meta_model_delta_auroc_std": 0.006013532425440908,
+      "incremental_meta_model_delta_log_loss_mean": 0.0005400974261409175,
+      "incremental_epistemic_beats_auc_seed_count": 1,
+      "incremental_epistemic_beats_log_loss_seed_count": 0
+    }
+  }
+}

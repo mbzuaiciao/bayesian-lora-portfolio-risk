@@ -1,0 +1,248 @@
+{
+  "purpose": "pre-specified unseen-company distribution-shift test",
+  "shift_definition": "symbol absent from all usable pre-2022 rows",
+  "primary_criterion": "epistemic uncertainty must add information beyond confidence on unseen-company examples; higher raw uncertainty alone is insufficient",
+  "methodological_status": "targeted shift analysis pre-specified before subgroup outcome inspection; underlying dates were used in prior aggregate analyses",
+  "runs": [
+    {
+      "seed": 42,
+      "train_symbol_count": 339,
+      "2023": {
+        "seen": {
+          "n": 1169,
+          "unique_symbols": 297,
+          "error_rate": 0.24123182207014543,
+          "mean_epistemic_variance": 7.509082916769422e-05,
+          "mean_confidence_uncertainty": 0.3753216026474939,
+          "epistemic_error_detection_auroc": 0.5824278186891826,
+          "confidence_error_detection_auroc": 0.6031487122902126,
+          "epistemic_minus_confidence_error_detection_auroc": -0.02072089360103002
+        },
+        "unseen": {
+          "n": 12,
+          "unique_symbols": 5,
+          "error_rate": 0.25,
+          "mean_epistemic_variance": 5.2128134519299284e-05,
+          "mean_confidence_uncertainty": 0.3448516736389137,
+          "epistemic_error_detection_auroc": 0.5185185185185185,
+          "confidence_error_detection_auroc": 0.6296296296296295,
+          "epistemic_minus_confidence_error_detection_auroc": -0.11111111111111105
+        },
+        "incremental_meta_model_seen_2022_to_unseen_2023": {
+          "status": "ok",
+          "train_n": 1188,
+          "test_n": 12,
+          "confidence_only_auroc": 0.6296296296296295,
+          "confidence_plus_epistemic_auroc": 0.5555555555555556,
+          "delta_auroc": -0.07407407407407396,
+          "confidence_only_log_loss": 0.5321637589444408,
+          "confidence_plus_epistemic_log_loss": 0.5465078949247345,
+          "delta_log_loss": 0.014344135980293715
+        }
+      },
+      "2024_2025": {
+        "seen": {
+          "n": 1693,
+          "unique_symbols": 294,
+          "error_rate": 0.264619019492026,
+          "mean_epistemic_variance": 6.755109839594209e-05,
+          "mean_confidence_uncertainty": 0.3711735436416958,
+          "epistemic_error_detection_auroc": 0.5920736517498566,
+          "confidence_error_detection_auroc": 0.595460413080895,
+          "epistemic_minus_confidence_error_detection_auroc": -0.003386761331038435
+        },
+        "unseen": {
+          "n": 35,
+          "unique_symbols": 7,
+          "error_rate": 0.14285714285714285,
+          "mean_epistemic_variance": 6.634942208183145e-05,
+          "mean_confidence_uncertainty": 0.3527466297216181,
+          "epistemic_error_detection_auroc": 0.7,
+          "confidence_error_detection_auroc": 0.6933333333333334,
+          "epistemic_minus_confidence_error_detection_auroc": 0.006666666666666599
+        },
+        "incremental_meta_model_seen_pre2024_to_unseen_2024_2025": {
+          "status": "ok",
+          "train_n": 2357,
+          "test_n": 35,
+          "confidence_only_auroc": 0.6933333333333334,
+          "confidence_plus_epistemic_auroc": 0.7000000000000001,
+          "delta_auroc": 0.00666666666666671,
+          "confidence_only_log_loss": 0.4149957709674338,
+          "confidence_plus_epistemic_log_loss": 0.41003548586537375,
+          "delta_log_loss": -0.004960285102060036
+        }
+      }
+    },
+    {
+      "seed": 123,
+      "train_symbol_count": 339,
+      "2023": {
+        "seen": {
+          "n": 1169,
+          "unique_symbols": 297,
+          "error_rate": 0.24208725406330198,
+          "mean_epistemic_variance": 5.6619079826009106e-05,
+          "mean_confidence_uncertainty": 0.38964745636564274,
+          "epistemic_error_detection_auroc": 0.5690003110816868,
+          "confidence_error_detection_auroc": 0.5972329682776445,
+          "epistemic_minus_confidence_error_detection_auroc": -0.02823265719595769
+        },
+        "unseen": {
+          "n": 12,
+          "unique_symbols": 5,
+          "error_rate": 0.25,
+          "mean_epistemic_variance": 4.0673920709194366e-05,
+          "mean_confidence_uncertainty": 0.3428510604814316,
+          "epistemic_error_detection_auroc": 0.7407407407407407,
+          "confidence_error_detection_auroc": 0.6296296296296295,
+          "epistemic_minus_confidence_error_detection_auroc": 0.11111111111111116
+        },
+        "incremental_meta_model_seen_2022_to_unseen_2023": {
+          "status": "ok",
+          "train_n": 1188,
+          "test_n": 12,
+          "confidence_only_auroc": 0.6296296296296295,
+          "confidence_plus_epistemic_auroc": 0.7037037037037037,
+          "delta_auroc": 0.07407407407407418,
+          "confidence_only_log_loss": 0.5341720125170663,
+          "confidence_plus_epistemic_log_loss": 0.5249882203225867,
+          "delta_log_loss": -0.009183792194479512
+        }
+      },
+      "2024_2025": {
+        "seen": {
+          "n": 1693,
+          "unique_symbols": 294,
+          "error_rate": 0.26520968694624925,
+          "mean_epistemic_variance": 5.3605363978689446e-05,
+          "mean_confidence_uncertainty": 0.389063574469073,
+          "epistemic_error_detection_auroc": 0.5853235843854511,
+          "confidence_error_detection_auroc": 0.5956108250560372,
+          "epistemic_minus_confidence_error_detection_auroc": -0.010287240670586173
+        },
+        "unseen": {
+          "n": 35,
+          "unique_symbols": 7,
+          "error_rate": 0.14285714285714285,
+          "mean_epistemic_variance": 5.0759588298681444e-05,
+          "mean_confidence_uncertainty": 0.3637469253303217,
+          "epistemic_error_detection_auroc": 0.6733333333333333,
+          "confidence_error_detection_auroc": 0.68,
+          "epistemic_minus_confidence_error_detection_auroc": -0.00666666666666671
+        },
+        "incremental_meta_model_seen_pre2024_to_unseen_2024_2025": {
+          "status": "ok",
+          "train_n": 2357,
+          "test_n": 35,
+          "confidence_only_auroc": 0.68,
+          "confidence_plus_epistemic_auroc": 0.7066666666666667,
+          "delta_auroc": 0.026666666666666616,
+          "confidence_only_log_loss": 0.4149821836196174,
+          "confidence_plus_epistemic_log_loss": 0.41457982962345574,
+          "delta_log_loss": -0.0004023539961616751
+        }
+      }
+    },
+    {
+      "seed": 777,
+      "train_symbol_count": 339,
+      "2023": {
+        "seen": {
+          "n": 1169,
+          "unique_symbols": 297,
+          "error_rate": 0.24208725406330198,
+          "mean_epistemic_variance": 3.1195151347456e-05,
+          "mean_confidence_uncertainty": 0.28244685301547745,
+          "epistemic_error_detection_auroc": 0.5653072131069083,
+          "confidence_error_detection_auroc": 0.5964512758337388,
+          "epistemic_minus_confidence_error_detection_auroc": -0.031144062726830457
+        },
+        "unseen": {
+          "n": 12,
+          "unique_symbols": 5,
+          "error_rate": 0.25,
+          "mean_epistemic_variance": 2.070300718482018e-05,
+          "mean_confidence_uncertainty": 0.24928700758027836,
+          "epistemic_error_detection_auroc": 0.6666666666666665,
+          "confidence_error_detection_auroc": 0.5925925925925926,
+          "epistemic_minus_confidence_error_detection_auroc": 0.07407407407407396
+        },
+        "incremental_meta_model_seen_2022_to_unseen_2023": {
+          "status": "ok",
+          "train_n": 1188,
+          "test_n": 12,
+          "confidence_only_auroc": 0.5925925925925926,
+          "confidence_plus_epistemic_auroc": 0.6666666666666665,
+          "delta_auroc": 0.07407407407407396,
+          "confidence_only_log_loss": 0.5526410623097243,
+          "confidence_plus_epistemic_log_loss": 0.5345677269400394,
+          "delta_log_loss": -0.018073335369684917
+        }
+      },
+      "2024_2025": {
+        "seen": {
+          "n": 1693,
+          "unique_symbols": 294,
+          "error_rate": 0.26520968694624925,
+          "mean_epistemic_variance": 3.0479889180137293e-05,
+          "mean_confidence_uncertainty": 0.2834034695261698,
+          "epistemic_error_detection_auroc": 0.591158272402409,
+          "confidence_error_detection_auroc": 0.5933764922407064,
+          "epistemic_minus_confidence_error_detection_auroc": -0.0022182198382973972
+        },
+        "unseen": {
+          "n": 35,
+          "unique_symbols": 7,
+          "error_rate": 0.14285714285714285,
+          "mean_epistemic_variance": 2.4196887173694927e-05,
+          "mean_confidence_uncertainty": 0.26049086717289993,
+          "epistemic_error_detection_auroc": 0.6933333333333334,
+          "confidence_error_detection_auroc": 0.7066666666666667,
+          "epistemic_minus_confidence_error_detection_auroc": -0.013333333333333308
+        },
+        "incremental_meta_model_seen_pre2024_to_unseen_2024_2025": {
+          "status": "ok",
+          "train_n": 2357,
+          "test_n": 35,
+          "confidence_only_auroc": 0.7066666666666667,
+          "confidence_plus_epistemic_auroc": 0.7266666666666666,
+          "delta_auroc": 0.019999999999999907,
+          "confidence_only_log_loss": 0.4218945239060285,
+          "confidence_plus_epistemic_log_loss": 0.414734517053493,
+          "delta_log_loss": -0.007160006852535483
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "2023": {
+      "unseen_n_per_seed": [
+        12,
+        12,
+        12
+      ],
+      "unseen_epistemic_minus_confidence_error_detection_auroc_mean": 0.024691358024691357,
+      "unseen_epistemic_minus_confidence_error_detection_auroc_std": 0.0972099737532322,
+      "epistemic_beats_confidence_error_detection_seed_count": 2,
+      "incremental_meta_model_delta_auroc_mean": 0.024691358024691395,
+      "incremental_meta_model_delta_log_loss_mean": -0.004304330527956905,
+      "incremental_epistemic_beats_auc_seed_count": 2,
+      "incremental_epistemic_beats_log_loss_seed_count": 2
+    },
+    "2024_2025": {
+      "unseen_n_per_seed": [
+        35,
+        35,
+        35
+      ],
+      "unseen_epistemic_minus_confidence_error_detection_auroc_mean": -0.004444444444444473,
+      "unseen_epistemic_minus_confidence_error_detection_auroc_std": 0.008314794192830946,
+      "epistemic_beats_confidence_error_detection_seed_count": 1,
+      "incremental_meta_model_delta_auroc_mean": 0.017777777777777743,
+      "incremental_meta_model_delta_log_loss_mean": -0.004174215316919065,
+      "incremental_epistemic_beats_auc_seed_count": 3,
+      "incremental_epistemic_beats_log_loss_seed_count": 3
+    }
+  }
+}
