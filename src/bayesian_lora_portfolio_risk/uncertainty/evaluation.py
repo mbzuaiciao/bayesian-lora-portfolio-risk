@@ -42,16 +42,49 @@ def effective_n(weights: np.ndarray) -> float:
     return float(1.0 / np.sum(norm**2))
 
 
-def normalize_same_gross(raw: np.ndarray) -> np.ndarray:
+def normalize_same_gross(
+    raw: np.ndarray,
+    *,
+    fallback_equal: bool = True,
+) -> np.ndarray:
     """Normalize raw weights so that their sum equals len(raw) (mean weight 1.0).
 
     Negative entries are clipped to 0.0.
+    If all entries are zero (or gross exposure is zero):
+    - When fallback_equal is True and len(raw) > 0, returns uniform equal weights (all 1.0).
+    - Otherwise raises ValueError.
     """
     raw_arr = np.maximum(np.asarray(raw, dtype=float), 0.0)
     total = float(raw_arr.sum())
     if total <= 0:
+        if fallback_equal and len(raw_arr) > 0:
+            return np.ones_like(raw_arr, dtype=float)
         raise ValueError("allocation rule produced zero gross exposure")
     return raw_arr * (len(raw_arr) / total)
+
+
+def compute_allocation_weights(
+    posterior_mean: np.ndarray,
+    uncertainty_score: np.ndarray | None = None,
+    *,
+    fallback_equal: bool = True,
+) -> np.ndarray:
+    """Compute gross-normalized portfolio weights from downside probability and uncertainty.
+
+    Base raw weights are given by 1 - posterior_mean.
+    If uncertainty_score is provided (e.g., reliability in [0, 1]), raw weights are scaled:
+        raw = (1 - posterior_mean) * uncertainty_score
+    If all raw scores are zero (e.g., p == 0.5 everywhere with zero confidence reliability),
+    returns uniform equal weights (mean 1.0) when fallback_equal is True.
+    """
+    p = np.asarray(posterior_mean, dtype=float)
+    base_raw = 1.0 - p
+    if uncertainty_score is not None:
+        rel = np.asarray(uncertainty_score, dtype=float)
+        raw = base_raw * rel
+    else:
+        raw = base_raw
+    return normalize_same_gross(raw, fallback_equal=fallback_equal)
 
 
 def powered_weights(raw: np.ndarray, gamma: float) -> np.ndarray:
@@ -106,6 +139,8 @@ def allocation_metrics(
     y_true: np.ndarray,
     move_1d: np.ndarray,
     weights: np.ndarray,
+    *,
+    fallback_equal: bool = True,
 ) -> dict[str, float]:
     """Calculate portfolio performance and downside risk metrics given weights."""
     y = np.asarray(y_true, dtype=float)
@@ -113,8 +148,13 @@ def allocation_metrics(
     w = np.asarray(weights, dtype=float)
     total_w = float(w.sum())
     if total_w <= 0.0:
-        raise ValueError("total weights must be strictly positive")
-    norm = w / total_w
+        if fallback_equal and len(w) > 0:
+            norm = np.full_like(w, 1.0 / len(w), dtype=float)
+            w = np.ones_like(w, dtype=float)
+        else:
+            raise ValueError("total weights must be strictly positive")
+    else:
+        norm = w / total_w
     downside_loss = np.maximum(-move, 0.0)
 
     return {

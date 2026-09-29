@@ -8,6 +8,7 @@ import pytest
 
 from bayesian_lora_portfolio_risk.uncertainty.evaluation import (
     allocation_metrics,
+    compute_allocation_weights,
     confidence_uncertainty,
     define_sparse_history_companies,
     define_underrepresented_sectors,
@@ -71,6 +72,39 @@ def test_normalize_same_gross_mean_is_one() -> None:
     assert np.sum(norm_neg) == pytest.approx(3.0)
 
 
+def test_normalize_same_gross_zero_score_fallback() -> None:
+    # All zeros fallback returns uniform equal weights (all 1.0)
+    zeros = np.zeros(5)
+    norm = normalize_same_gross(zeros)
+    np.testing.assert_allclose(norm, np.ones(5))
+    assert np.sum(norm) == pytest.approx(5.0)
+    assert np.mean(norm) == pytest.approx(1.0)
+
+    # With fallback_equal=False, raises ValueError
+    with pytest.raises(ValueError, match="zero gross exposure"):
+        normalize_same_gross(zeros, fallback_equal=False)
+
+    # Empty array raises ValueError
+    with pytest.raises(ValueError, match="zero gross exposure"):
+        normalize_same_gross(np.array([]))
+
+
+def test_compute_allocation_weights_degenerate_p_half() -> None:
+    # Degenerate edge case where p == 0.5 everywhere -> confidence reliability == 0
+    p = np.array([0.5, 0.5, 0.5])
+    conf_rel = 1.0 - confidence_uncertainty(p)
+    np.testing.assert_allclose(conf_rel, np.zeros(3))
+
+    # Weight computation returns equal weights of 1.0 instead of crashing
+    w = compute_allocation_weights(p, conf_rel)
+    np.testing.assert_allclose(w, np.ones(3))
+    assert np.sum(w) == pytest.approx(3.0)
+
+    # When p == 1.0 everywhere, base raw is 0 -> fallback to equal weights
+    w_extreme = compute_allocation_weights(np.array([1.0, 1.0]))
+    np.testing.assert_allclose(w_extreme, np.ones(2))
+
+
 def test_match_effective_n_bisection() -> None:
     # Non-uniform raw scores
     raw = np.array([0.1, 0.3, 0.5, 0.7, 0.9])
@@ -105,6 +139,20 @@ def test_allocation_metrics_weighted_quantities() -> None:
     # downside loss is max(-move, 0): (0.05 + 0 + 0.10 + 0) / 4 = 0.0375
     assert m["weighted_mean_downside_loss"] == pytest.approx(0.0375)
     assert m["effective_n"] == pytest.approx(4.0)
+
+
+def test_allocation_metrics_zero_weights_fallback() -> None:
+    y = np.array([1, 0, 1, 0])
+    moves = np.array([-0.05, 0.02, -0.10, 0.04])
+    # Zero weights fallback to uniform weighting
+    w_zeros = np.zeros(4)
+    m = allocation_metrics(y, moves, w_zeros)
+    assert m["weighted_downside_event_rate"] == pytest.approx(0.5)
+    assert m["effective_n"] == pytest.approx(4.0)
+
+    # With fallback_equal=False, raises ValueError
+    with pytest.raises(ValueError, match="strictly positive"):
+        allocation_metrics(y, moves, w_zeros, fallback_equal=False)
 
 
 def test_fit_incremental_meta_model_synthetic() -> None:
