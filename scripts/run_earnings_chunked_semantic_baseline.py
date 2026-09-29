@@ -166,12 +166,13 @@ def _encode_documents(
                 flush=True,
             )
 
-    hidden_size = int(getattr(model.config, "hidden_size"))
+    hidden_size = int(model.config.hidden_size)
     sums = torch.zeros((len(texts), hidden_size), dtype=torch.float32)
     counts = torch.zeros(len(texts), dtype=torch.float32)
     total_batches = (len(flat_chunks) + batch_size - 1) // batch_size
     print(
-        f"Encoding {split_name}: {len(flat_chunks)} chunks in {total_batches} batches on {device}...",
+        f"Encoding {split_name}: {len(flat_chunks)} chunks in {total_batches} "
+        f"batches on {device}...",
         flush=True,
     )
 
@@ -362,10 +363,14 @@ def main() -> None:
         "max_chunks": args.max_chunks,
         "mean_train_chunks": float(np.mean(train_chunks)),
         "median_train_chunks": float(np.median(train_chunks)),
-        "fraction_train_hitting_max_chunks": float(np.mean(np.asarray(train_chunks) == args.max_chunks)),
+        "fraction_train_hitting_max_chunks": float(
+            np.mean(np.asarray(train_chunks) == args.max_chunks)
+        ),
         "mean_test_chunks": float(np.mean(test_chunks)),
         "median_test_chunks": float(np.median(test_chunks)),
-        "fraction_test_hitting_max_chunks": float(np.mean(np.asarray(test_chunks) == args.max_chunks)),
+        "fraction_test_hitting_max_chunks": float(
+            np.mean(np.asarray(test_chunks) == args.max_chunks)
+        ),
         "constant": _metrics(y_test, constant_p),
         "structured_only": _metrics(y_test, structured_p),
         "chunked_semantic_text_only": _metrics(y_test, semantic_p),

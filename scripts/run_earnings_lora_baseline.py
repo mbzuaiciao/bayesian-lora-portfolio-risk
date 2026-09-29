@@ -334,9 +334,15 @@ def main() -> None:
         max_chunks=args.eval_max_chunks,
     )
     collate = _make_collate(tokenizer)
-    train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True, collate_fn=collate)
-    valid_loader = DataLoader(valid_ds, batch_size=args.batch_size, shuffle=False, collate_fn=collate)
-    test_loader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False, collate_fn=collate)
+    train_loader = DataLoader(
+        train_ds, batch_size=args.batch_size, shuffle=True, collate_fn=collate
+    )
+    valid_loader = DataLoader(
+        valid_ds, batch_size=args.batch_size, shuffle=False, collate_fn=collate
+    )
+    test_loader = DataLoader(
+        test_ds, batch_size=args.batch_size, shuffle=False, collate_fn=collate
+    )
 
     optimizer = torch.optim.AdamW(
         [p for p in model.parameters() if p.requires_grad],

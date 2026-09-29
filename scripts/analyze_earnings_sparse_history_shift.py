@@ -46,7 +46,6 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-
 from analyze_earnings_unseen_company_shift import (
     attach_metadata,
     basic_metrics,

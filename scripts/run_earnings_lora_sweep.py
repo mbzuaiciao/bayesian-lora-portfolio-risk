@@ -22,7 +22,6 @@ import sys
 from pathlib import Path
 from typing import Any
 
-
 TFIDF_REFERENCE_AUROC = 0.6118578653180728
 FROZEN_FINBERT_REFERENCE_AUROC = 0.5788952409608344
 

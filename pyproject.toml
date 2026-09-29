@@ -37,3 +37,17 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*" = ["E501", "B905", "B009"]
+
+[tool.pyright]
+include = ["src", "tests"]
+exclude = ["**/node_modules", "**/__pycache__", ".venv"]
+typeCheckingMode = "standard"
+reportMissingTypeStubs = false
+reportGeneralTypeIssues = "warning"
+reportCallIssue = "warning"
+reportArgumentType = "warning"
+reportReturnType = "warning"
+reportAttributeAccessIssue = "warning"

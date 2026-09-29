@@ -90,10 +90,10 @@ def write_summary(args: argparse.Namespace, runs: list[dict[str, Any]]) -> None:
     complete = len(runs) == len(args.seeds)
     epi_auc = [float(row["epistemic_error_detection_auroc"]) for row in runs]
     conf_auc = [float(row["confidence_error_detection_auroc"]) for row in runs]
-    auc_delta = [a - b for a, b in zip(epi_auc, conf_auc)]
+    auc_delta = [a - b for a, b in zip(epi_auc, conf_auc, strict=True)]
     epi_risk = [float(row["epistemic_selective_risk_50"]) for row in runs]
     conf_risk = [float(row["confidence_selective_risk_50"]) for row in runs]
-    risk_delta = [b - a for a, b in zip(epi_risk, conf_risk)]
+    risk_delta = [b - a for a, b in zip(epi_risk, conf_risk, strict=True)]
 
     summary: dict[str, Any] = {
         "purpose": "Bayesian epistemic uncertainty versus deterministic confidence control",

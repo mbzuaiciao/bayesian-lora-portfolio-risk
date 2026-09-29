@@ -50,7 +50,6 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-
 LAMBDA_GRID = (0.0, 0.25, 0.5, 1.0, 2.0)
 
 

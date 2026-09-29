@@ -36,7 +36,6 @@ from bayesian_lora_portfolio_risk.data.builder import (
 )
 from bayesian_lora_portfolio_risk.data.fnspid import load_fnspid_price_history
 
-
 COMPANY_ALIASES: dict[str, tuple[str, ...]] = {
     "AAPL": ("apple", "apple inc"),
     "MSFT": ("microsoft", "microsoft corp", "microsoft corporation"),

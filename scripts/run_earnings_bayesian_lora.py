@@ -11,22 +11,20 @@ whether posterior uncertainty identifies unreliable predictions and temporal shi
 from __future__ import annotations
 
 import argparse
-import copy
 import json
 import math
-import sys
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
-import torch
-from sklearn.metrics import roc_auc_score
-from torch.utils.data import DataLoader
 
 # Reuse the audited transcript chunking / document aggregation code from the
 # deterministic experiment so only the adaptation method changes.
 import run_earnings_lora_baseline as det
+import torch
+from sklearn.metrics import roc_auc_score
+from torch.utils.data import DataLoader
 
 from bayesian_lora_portfolio_risk.uncertainty.bayesian_lora import (
     count_variational_parameters,
@@ -165,7 +163,11 @@ def main() -> None:
         raise ValueError("mc-samples must be at least 2")
     det._seed_everything(args.seed)
 
-    from transformers import AutoModelForSequenceClassification, AutoTokenizer, get_linear_schedule_with_warmup
+    from transformers import (
+        AutoModelForSequenceClassification,
+        AutoTokenizer,
+        get_linear_schedule_with_warmup,
+    )
 
     frame = load_frame(args)
     train, valid, test, threshold = split_frame(frame, args)

@@ -183,11 +183,17 @@ def main() -> None:
                         result=result,
                     )
                     rows.append(row)
-                    print(f"[{run_index}/{runs_total}] {tag} already complete; skipping", flush=True)
+                    print(
+                        f"[{run_index}/{runs_total}] {tag} already complete; skipping",
+                        flush=True,
+                    )
                     _write_summary(args.output_dir, rows, runs_total)
                     continue
                 except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
-                    print(f"[{run_index}/{runs_total}] {tag} artifact unreadable; rerunning", flush=True)
+                    print(
+                        f"[{run_index}/{runs_total}] {tag} artifact unreadable; rerunning",
+                        flush=True,
+                    )
 
             command = [
                 sys.executable,
@@ -233,7 +239,8 @@ def main() -> None:
             ]
 
             print(
-                f"\n=== Stage 2 run {run_index}/{runs_total}: r={rank}, lr={learning_rate:g}, seed={seed} ===",
+                f"\n=== Stage 2 run {run_index}/{runs_total}: "
+                f"r={rank}, lr={learning_rate:g}, seed={seed} ===",
                 flush=True,
             )
             subprocess.run(command, check=True)
