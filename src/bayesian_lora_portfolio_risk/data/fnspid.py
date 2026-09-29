@@ -16,7 +16,6 @@ _NEWS_ALIASES = {
     "Date": "timestamp",
     "stock_symbol": "ticker",
     "Stock_symbol": "ticker",
-    "Stock_symbol": "ticker",
     "Article_title": "title",
     "article_title": "title",
     "Article": "article",

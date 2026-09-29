@@ -18,7 +18,9 @@ import torch.nn.functional as F
 class VariationalGaussianParameter(nn.Module):
     """Mean-field Gaussian q(theta)=N(mu, diag(sigma^2))."""
 
-    def __init__(self, shape: tuple[int, ...], *, init_std: float = 0.01, eps: float = 1e-6) -> None:
+    def __init__(
+        self, shape: tuple[int, ...], *, init_std: float = 0.01, eps: float = 1e-6
+    ) -> None:
         super().__init__()
         if init_std <= 0.0:
             raise ValueError("init_std must be positive")
@@ -134,7 +136,9 @@ def inject_bert_attention_bayesian_lora(
     """Replace BERT attention query/value Linear modules with Bayesian LoRA wrappers."""
     replacements: list[tuple[str, nn.Linear]] = []
     for name, module in model.named_modules():
-        if isinstance(module, nn.Linear) and (name.endswith("attention.self.query") or name.endswith("attention.self.value")):
+        if isinstance(module, nn.Linear) and (
+            name.endswith("attention.self.query") or name.endswith("attention.self.value")
+        ):
             replacements.append((name, module))
 
     for name, module in replacements:

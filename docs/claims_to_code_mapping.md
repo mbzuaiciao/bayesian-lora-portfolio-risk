@@ -1,0 +1,38 @@
+# Research Claims to Code and Artifacts Mapping
+
+This document provides a systematic mapping between every claim in `README.md` and `docs/research_spec.md`, the code that executes or analyzes it, and the committed result artifacts that support it.
+
+---
+
+## 1. Claims in README.md & docs/research_spec.md
+
+| # | Scientific Claim / Finding | Execution / Analysis Code | Supporting Result / Artifact | Status / Audit Notes |
+|---|----------------------------|---------------------------|------------------------------|----------------------|
+| **1** | **FNSPID Pilot Gate Failure:** Daily news formulation failed the deterministic information gate across multiple horizons, relevance filtering, and semantic embeddings. | `scripts/audit_structured_baselines.py`<br>`scripts/audit_text_baseline.py`<br>`scripts/audit_horizon_sweep.py`<br>`scripts/audit_semantic_text_baseline.py`<br>`scripts/audit_chunked_semantic_baseline.py` | `artifacts/structured_baselines_volnorm_2022.json`<br>`artifacts/text_baseline_volnorm_2022.json`<br>`artifacts/semantic_text_baseline_volnorm_2022.json`<br>`artifacts/relevance_filtered_horizon_sweep.json`<br>`artifacts/chunked_semantic_baseline_2022.json` | Fully auditable and reproducible with committed artifacts. Pure data builder logic in `src/bayesian_lora_portfolio_risk/data/`. |
+| **2** | **Earnings Task Gate 0 Pass:** Deterministic text signal (TF-IDF and FinBERT) contains predictive information for the downside earnings-event target; LoRA adaptation produces a usable model. | `scripts/run_earnings_gate0_baselines.py`<br>`scripts/run_earnings_chunked_semantic_baseline.py`<br>`scripts/run_earnings_lora_baseline.py`<br>`scripts/run_earnings_lora_sweep.py`<br>`scripts/run_earnings_lora_stage2_repro.py` | `artifacts/earnings_gate0_2022_2023.json`<br>`artifacts/earnings_chunked_semantic_2022_2023.json`<br>`artifacts/earnings_lora_2022_2023.json`<br>`results/earnings_lora_sweep_stage1/`<br>`results/earnings_lora_stage2_repro/` | Validated. Model selection metrics frozen on pre-2022 validation splits; stage 2 selected rank=16, lr=2e-4. |
+| **3** | **Bayesian Uncertainty Diagnostics:** Epistemic uncertainty from Bayesian LoRA is reproducibly associated with harder / more error-prone examples; error rate rises with uncertainty quantiles. | `src/bayesian_lora_portfolio_risk/uncertainty/bayesian_lora.py`<br>`scripts/run_earnings_bayesian_lora.py`<br>`scripts/run_earnings_bayesian_lora_beta_sweep.py`<br>`scripts/run_earnings_bayesian_lora_repro.py` | `results/earnings_bayesian_lora/repro_summary.json`<br>`artifacts/earnings_bayesian_lora_uncertainty_control/`<br>`artifacts/earnings_bayesian_lora_final_holdout/` | Verified. High-vs-low quintile error gap is positive across all seeds (+12.06% on dev diagnostic). |
+| **4** | **Confidence Control (Primary Finding 1):** Ordinary classifier confidence ($1 - 2|p - 0.5|$) is at least as useful as epistemic uncertainty for error detection and selective classification. | `scripts/run_earnings_bayesian_lora_uncertainty_control.py`<br>`scripts/analyze_earnings_epistemic_incremental_value.py`<br>`scripts/run_earnings_bayesian_lora_final_holdout.py` | `results/earnings_bayesian_lora/uncertainty_control_summary.json`<br>`results/earnings_bayesian_lora/incremental_epistemic_value.json`<br>`results/earnings_bayesian_lora_final_holdout/summary.json` | Verified. Confidence error-detection AUROC (0.597) > epistemic AUROC (0.580) on dev. Incremental meta-model $\Delta$AUROC is -0.0028 on dev and +0.0003 on 2024-2025 holdout. |
+| **5** | **Concentration Matching (Primary Finding 2):** An apparent allocation advantage from epistemic sizing disappears after matching portfolio concentration ($N_{\text{eff}}$). | `scripts/analyze_earnings_event_risk_allocation.py`<br>`scripts/analyze_earnings_event_risk_allocation_concentration_control.py`<br>`scripts/analyze_earnings_event_risk_allocation_rolling.py` | `results/earnings_event_risk_allocation/summary.json`<br>`results/earnings_event_risk_allocation_concentration_control/summary.json`<br>`artifacts/earnings_event_risk_allocation_rolling/summary.json` | Verified. Raw epistemic sizing produced lower $N_{\text{eff}}$ (~856 vs ~1118). When matched on effective $N$, epistemic allocation underperforms matched confidence in 0/3 seeds. |
+| **6** | **Model-Risk Penalty Optimization (Primary Finding 3):** When epistemic uncertainty is added as a separate model-risk penalty ($e^{-\lambda u}$) on top of confidence, the selected penalty strength $\lambda^*$ is zero across all seeds and periods. | `scripts/analyze_earnings_model_risk_penalty.py` | `results/earnings_model_risk_penalty/summary.json` | Verified. Grid search over $\lambda \in \{0, 0.25, 0.5, 1, 2\}$ chooses $\lambda = 0.0$ for 100% of seeds in both 2023 and 2024-2025 periods. |
+| **7** | **Distribution Shift Robustness (Primary Finding 4):** Targeted shift tests on unseen companies, sparse-history companies, and underrepresented sectors do not show robust incremental value beyond confidence. | `scripts/analyze_earnings_unseen_company_shift.py`<br>`scripts/analyze_earnings_sparse_history_shift.py`<br>`scripts/analyze_earnings_underrepresented_sector_shift.py` | `results/earnings_unseen_company_shift/summary.json`<br>`results/earnings_sparse_history_shift/summary.json`<br>`results/earnings_underrepresented_sector_shift/summary.json` | Verified. Unseen companies ($N=35$) showed weak +0.0178 hint; sparse history was mixed/weak; underrepresented sectors ($N=133, 204$) gave clear negative result (-0.0208 $\Delta$AUROC, 0/3 seeds beating confidence). |
+
+---
+
+## 2. Inadequately Tested Conclusion-Critical Code
+
+Prior to this audit, unit tests only covered:
+- Basic synthetic FNSPID ingestion and drawdown labels.
+- Basic Brier score, ECE, error rate by quantile, and selective risk curve.
+
+The following **conclusion-critical code** lived entirely in `scripts/` without isolated test coverage or formal validation:
+1. **Confidence uncertainty metric:** $u_{\text{conf}} = 1 - 2|p - 0.5|$.
+2. **Empirical CDF percentile ranking:** Out-of-sample mapping of epistemic variance to $[0, 1]$ reliability.
+3. **Effective Number of Positions ($N_{\text{eff}}$):** Inverse Herfindahl index calculation $1 / \sum w_i^2$.
+4. **Concentration matching algorithm:** Monotonic power-transformation $\gamma$-bisection to match $N_{\text{eff}}$ without outcome leakage.
+5. **Model-risk penalty evaluation:** Exponential weighting $w \cdot e^{-\lambda u}$, gross normalization, and grid calibration.
+6. **Incremental error meta-model:** Logistic regression ($u_{\text{conf}}$ vs $u_{\text{conf}} + \log(\sigma^2_{\text{epi}})$) evaluating out-of-sample $\Delta$AUROC and $\Delta$log-loss.
+7. **Subgroup shift definition logic:**
+   - Unseen companies: strict exclusion of symbols seen in pre-2022 records.
+   - Sparse history companies: thresholding on count of pre-2022 occurrences ($\le 4$).
+   - Underrepresented sectors: 25th percentile frequency thresholding on pre-2022 sector counts.
+8. **Temporal boundary invariants:** Ensuring pre-test, 2022-2023 development, and 2024-2025 holdout splits are strictly non-overlapping and respect chronological causality.
