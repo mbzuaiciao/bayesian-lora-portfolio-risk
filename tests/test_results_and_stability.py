@@ -8,7 +8,7 @@ proofs of algorithmic correctness.
 
 Independent mathematical and algorithmic unit tests are strictly decoupled and
 located in:
-- `tests/test_numerical_stability.py` (boundary conditions, precision limits, mathematical properties)
+- `tests/test_numerical_stability.py` (boundary conditions, precision limits)
 - `tests/test_evaluation_metrics.py` (metric formulas, weighting, concentration matching)
 - `tests/test_bayesian_lora.py` (variational layers, ELBO, reparameterization)
 - `tests/test_leakage_and_invariants.py` (temporal ordering, label boundaries)

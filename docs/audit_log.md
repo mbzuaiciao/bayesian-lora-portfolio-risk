@@ -54,5 +54,21 @@ This document records the comprehensive audit conducted on this repository as a 
 
 ## 4. Verification of Items Requiring Local/Absent Checkpoints
 
-- **Model Checkpoints (`*.pt`, `adapter_model.safetensors`):** Large checkpoint files and raw token cache files (> 100MB) are intentionally excluded from git tracking to keep repository clone size minimal.
-- **Verification Technique:** Because the completed Monte Carlo prediction files (`beta_0p003_seed_{42,123,777}_mc32_predictions.csv`) for both development and holdout are committed under `artifacts/`, all downstream statistical, economic, and distribution-shift results were verified directly against these prediction arrays. The lightweight verification script `scripts/verify_reproducibility.py` validates this complete calculation chain in under 5 seconds on CPU.
+- **Model Checkpoints & Prediction Artifacts (`*.pt`, `adapter_model.safetensors`, `*predictions.csv`):** Large checkpoint files and generated prediction CSVs (> 100MB) are intentionally excluded from git tracking via `.gitignore` to keep repository clone size minimal.
+- **Verification Technique:** Committed research summaries under `results/` serve as frozen ground truth. The verification script `scripts/verify_reproducibility.py` provides clean-clone verification by default (evaluating committed JSON schemas and statistical invariants), and optional deep verification (`--deep`) when prediction CSVs are present locally in `artifacts/`.
+
+---
+
+## 5. Remediation of Adversarial Audit Findings (FALSIFY-01 to FALSIFY-06)
+
+Following an adversarial audit of the computational appendix, six specific findings were identified and remediated without altering any frozen historical numerical outcomes:
+
+| Finding ID | Description | Remediation | Verification |
+|---|---|---|---|
+| **FALSIFY-01** | Prediction CSVs in `artifacts/` are gitignored, but verification script and docs asserted they were committed, breaking clean-clone CI. | Separated clean-clone verification (default) from optional deep recomputation (`--deep` / `--local-artifacts`) in `scripts/verify_reproducibility.py`. Corrected documentation in `docs/reproducibility.md` and `docs/audit_log.md`. CI runs clean-clone mode. | Clean clone simulation passes 100% with no `artifacts/` directory. `--deep` passes when artifacts are present. |
+| **FALSIFY-02** | Predictor scaling discrepancy: `StandardScaler` used in `analyze_earnings_epistemic_incremental_value.py`, while unscaled predictors were used elsewhere. | Retained all historical scripts and results untouched. Implemented dedicated sensitivity analysis script `scripts/analyze_meta_model_sensitivity.py` evaluating the full $2 \times 2$ grid (scaled vs unscaled $\times$ 2022-only vs 2022–2023 pooled). Documented in `docs/meta_model_sensitivity_analysis.md`. | Verified headline negative result holds under both scaled and unscaled predictors ($\Delta\text{AUROC} \le 0.0007$ on holdout). |
+| **FALSIFY-03** | Training window discrepancy: meta-models fit on 2022-only vs 2022–2023 pooled data across scripts. | Evaluated both training windows across all predefined evaluation populations in `scripts/analyze_meta_model_sensitivity.py` without tuning or choosing a preferred model. | Verified conclusions are invariant to training window choice. |
+| **FALSIFY-04** | Calibration protocol discrepancy: initial exploratory allocation used pooled 2022–2023 reference CDF, while later concentration controls used sequential expanding-window calibration. | Explicitly documented the protocol evolution and rationale in Section 4.1 of `docs/reproducibility.md`. Both protocols yield identical qualitative conclusions ($\lambda^* = 0.0$). | Protocol distinction documented clearly without modifying committed results. |
+| **FALSIFY-05** | Test coupling: `test_results_and_stability.py` combined pure mathematical unit tests with frozen artifact regression snapshot checks without distinguishing them. | Strictly decoupled mathematical tests into `tests/test_numerical_stability.py` (property checks, precision limits, boundary conditions) and refactored `tests/test_results_and_stability.py` into explicitly documented artifact snapshot invariants. | All 50 pytest tests pass independently. |
+| **FALSIFY-06** | Allocation crash on degenerate all-zero raw scores (e.g. $p \equiv 0.5$ everywhere where confidence reliability is zero). | Enhanced `normalize_same_gross`, `compute_allocation_weights`, and `allocation_metrics` in `src/.../uncertainty/evaluation.py` with `fallback_equal=True` parameter returning uniform equal weights of 1.0. Added unit tests in `tests/test_evaluation_metrics.py`. | Degenerate edge cases return uniform weights safely; all non-zero historical calculations remain strictly identical. |
+

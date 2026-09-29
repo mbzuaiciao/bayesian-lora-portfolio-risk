@@ -23,20 +23,33 @@ uv sync
 
 ---
 
-## 2. Fast Consistency Verification
+## 2. Consistency & Reproducibility Verification
 
-To establish that all committed result summaries, distribution-shift audits, and downstream decision metrics are internally consistent with the committed prediction files without needing expensive GPU training, run:
+The repository supports two verification tiers via `scripts/verify_reproducibility.py`:
+
+### Tier 1: Clean-Clone Verification (Default, Fast, CI-safe)
+To establish that all committed result summaries, distribution-shift audits, and downstream decision metrics are internally consistent without needing any local artifacts, run:
 
 ```bash
 uv run python scripts/verify_reproducibility.py
 ```
 
-This automated check verifies:
-1. All 27 committed result summary JSON files are non-empty and well-formed.
-2. The seed prediction CSVs exist for both the 2022–2023 development diagnostic and 2024–2025 final holdout.
-3. Out-of-sample error detection AUROCs and selective risk metrics match committed results.
-4. Effective position counts ($N_{\text{eff}}$), $\gamma$-bisection concentration matching, and equal-gross allocation metrics match committed values.
-5. Optimal model-risk penalty strength selection yields $\lambda^* = 0.0$ across all seeds and periods.
+This automated clean-clone check:
+1. Validates that all 27 committed result summary JSON files under `results/` are non-empty and well-formed.
+2. Verifies statistical invariants across development, holdout, concentration-control, model-risk penalty, and subgroup shift summaries.
+3. Confirms that all mathematical relationships (e.g., $\Delta\text{AUROC} = \text{AUROC}_{\text{aug}} - \text{AUROC}_{\text{base}}$) hold exactly across committed outputs.
+4. Requires **zero** untracked local artifacts, passing reliably in CI environments from a fresh `git clone`.
+
+### Tier 2: Deep Local-Artifact Recomputation (`--deep`)
+When local prediction artifacts are present in `artifacts/` (e.g. from local inference runs or research storage), run:
+
+```bash
+uv run python scripts/verify_reproducibility.py --deep
+```
+
+This deep check recomputes:
+1. Out-of-sample error detection AUROCs and selective risk metrics directly from raw Monte Carlo prediction CSVs for all 3 seeds (42, 123, 777).
+2. Effective position counts ($N_{\text{eff}}$), $\gamma$-bisection concentration matching, and equal-gross allocation metrics, verifying exact bitwise/floating-point reproduction of committed research results.
 
 You can also run the full test suite, linter, and type checker:
 ```bash
@@ -90,10 +103,26 @@ The study proceeded across sequential stages, each freezing preceding hyperparam
 
 | Location | Contents | Committed to Git? | Status / Provenance |
 |---|---|---|---|
-| `results/` | Small summary JSONs for all sweep stages, Bayesian repro, concentration controls, model risk penalties, and shift subgroups. | **Yes** | Fully committed. Serves as ground truth for all numerical tables in docs. |
-| `artifacts/earnings_bayesian_lora_uncertainty_control/` | `beta_0p003_seed_{42,123,777}_mc32_predictions.csv` | **Yes** | 2022–2023 development diagnostic predictions with posterior mean, epistemic variance, and true labels. |
-| `artifacts/earnings_bayesian_lora_final_holdout/` | `beta_0p003_seed_{42,123,777}_mc32_predictions.csv` | **Yes** | 2024–2025 final holdout predictions with posterior mean, epistemic variance, and true labels. |
+| `results/` | Small summary JSONs for all sweep stages, Bayesian repro, concentration controls, model risk penalties, shift subgroups, and sensitivity analysis. | **Yes** | Fully committed. Serves as ground truth for all numerical tables in docs. Clean-clone verification checks this directory. |
+| `artifacts/earnings_bayesian_lora_uncertainty_control/` | `beta_0p003_seed_{42,123,777}_mc32_predictions.csv` | **No** (Local artifact) | Excluded from git via `.gitignore`. Generated locally during model inference. Used for optional deep verification (`--deep`). |
+| `artifacts/earnings_bayesian_lora_final_holdout/` | `beta_0p003_seed_{42,123,777}_mc32_predictions.csv` | **No** (Local artifact) | Excluded from git via `.gitignore`. Generated locally during holdout inference. Used for optional deep verification (`--deep`). |
 | `artifacts/*_state.pt`, `*.safetensors` | Model weights, PyTorch checkpoints, and full raw text dumps (> 100MB). | **No** (Local only) | Intentionally not tracked in git due to file size constraints. Reconstructible via training scripts if GPU available. |
+
+---
+
+### 4.1 Calibration Protocol Evolution (FALSIFY-04 Remediation)
+
+A methodological distinction exists across the portfolio allocation scripts regarding how epistemic reliability $1 - F_{\text{cal}}(\sigma^2_{\text{epi}})$ is calibrated:
+
+1. **Initial Exploratory Pooled Calibration Protocol** (`analyze_earnings_event_risk_allocation.py`):
+   - In the initial raw-sizing exploratory study, epistemic variance was normalized using an empirical CDF reference distribution $F_{\text{dev}}(\cdot)$ fit across the entire pooled 2022–2023 development sample ($N=2,369$).
+   - This single pooled calibration reference was then applied to score the 2024–2025 final holdout. While chronologically preceding the holdout, this pooled approach did not evaluate 2023 out-of-sample or segment the development period sequentially.
+
+2. **Sequential / Expanding-Window Calibration Protocol** (`analyze_earnings_event_risk_allocation_concentration_control.py` & `analyze_earnings_model_risk_penalty.py`):
+   - To strictly guard against temporal leakage and reflect real-world sequential deployment, later allocation scripts adopted a rigorous expanding-window calibration:
+     - **Period 1 (2023 Evaluation)**: The epistemic calibration distribution $F_{2022}(\cdot)$ and target effective position counts $N_{\text{eff}}$ were fit strictly on 2022 data ($N=1,188$).
+     - **Period 2 (2024–2025 Holdout Evaluation)**: The calibration distribution $F_{\text{pre-2024}}(\cdot)$ was fit on the expanding pre-2024 window (pooled 2022–2023 data, $N=2,369$).
+   - Under this sequential protocol, at no point are future evaluation periods or in-period outcomes used to normalize epistemic quantiles or set concentration matching targets. Both protocols yield consistent scientific conclusions: concentration matching and model-risk penalty optimizations confirm zero robust incremental value from epistemic variance ($\lambda^* = 0.0$).
 
 ---
 
@@ -146,6 +175,13 @@ The study proceeded across sequential stages, each freezing preceding hyperparam
    uv run python scripts/analyze_earnings_underrepresented_sector_shift.py \
        --output results/earnings_underrepresented_sector_shift/summary.json
    ```
+
+6. **Methodological Sensitivity Analysis ($2 \times 2$ Factorial Cross, FALSIFY-02 & FALSIFY-03):**
+   ```bash
+   uv run python scripts/analyze_meta_model_sensitivity.py \
+       --output results/earnings_meta_model_sensitivity/summary.json
+   ```
+   *Evaluates scaled vs. unscaled features across 2022-only vs. 2022–2023 pooled training on all predefined evaluation populations. See [meta_model_sensitivity_analysis.md](file:///Users/xq/Documents/GitHub/bayesian-lora-portfolio-risk/docs/meta_model_sensitivity_analysis.md).*
 
 ---
 

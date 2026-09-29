@@ -1,0 +1,825 @@
+{
+  "purpose": "Methodological sensitivity analysis for meta-model specification discrepancies",
+  "primary_findings": "Central controlled negative result is invariant to predictor scaling and training window",
+  "grid": {
+    "predictor_scaling": [
+      "unscaled",
+      "scaled"
+    ],
+    "training_windows": [
+      "2022_only",
+      "2022_2023_pooled"
+    ]
+  },
+  "runs": [
+    {
+      "seed": 42,
+      "evaluations": {
+        "2022_only__unscaled": {
+          "2023_test": {
+            "n_train": 1191,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.6037476503759398,
+            "confidence_plus_epistemic_auroc": 0.5950971177944863,
+            "delta_auroc": -0.00865053258145354,
+            "confidence_only_log_loss": 0.5434931599561434,
+            "confidence_plus_epistemic_log_loss": 0.5427765956847113,
+            "delta_log_loss": -0.0007165642714321852
+          },
+          "2024_2025_holdout": {
+            "n_train": 1191,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5968904471280786,
+            "confidence_plus_epistemic_auroc": 0.5975726096177986,
+            "delta_auroc": 0.000682162489719973,
+            "confidence_only_log_loss": 0.5623450409425749,
+            "confidence_plus_epistemic_log_loss": 0.5626820543362335,
+            "delta_log_loss": 0.00033701339365865834
+          },
+          "unseen_holdout": {
+            "n_train": 1191,
+            "n_test": 35,
+            "confidence_only_auroc": 0.6933333333333334,
+            "confidence_plus_epistemic_auroc": 0.7000000000000001,
+            "delta_auroc": 0.00666666666666671,
+            "confidence_only_log_loss": 0.41829481825184867,
+            "confidence_plus_epistemic_log_loss": 0.4126866624544886,
+            "delta_log_loss": -0.00560815579736007
+          },
+          "sparse_history_holdout": {
+            "n_train": 1191,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6189189189189189,
+            "confidence_plus_epistemic_auroc": 0.6486486486486487,
+            "delta_auroc": 0.02972972972972976,
+            "confidence_only_log_loss": 0.5074368293278634,
+            "confidence_plus_epistemic_log_loss": 0.4996932024243511,
+            "delta_log_loss": -0.0077436269035122685
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 1191,
+            "n_test": 204,
+            "confidence_only_auroc": 0.6006683375104428,
+            "confidence_plus_epistemic_auroc": 0.6034132951426184,
+            "delta_auroc": 0.0027449576321756375,
+            "confidence_only_log_loss": 0.5809704886084174,
+            "confidence_plus_epistemic_log_loss": 0.5813066338183377,
+            "delta_log_loss": 0.00033614520992031327
+          }
+        },
+        "2022_only__scaled": {
+          "2023_test": {
+            "n_train": 1191,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.6037476503759398,
+            "confidence_plus_epistemic_auroc": 0.6042293233082707,
+            "delta_auroc": 0.00048167293233092323,
+            "confidence_only_log_loss": 0.5443443089850649,
+            "confidence_plus_epistemic_log_loss": 0.5444319386774624,
+            "delta_log_loss": 8.762969239750618e-05
+          },
+          "2024_2025_holdout": {
+            "n_train": 1191,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5968904471280786,
+            "confidence_plus_epistemic_auroc": 0.5967865645154309,
+            "delta_auroc": -0.00010388261264770993,
+            "confidence_only_log_loss": 0.5617865914031925,
+            "confidence_plus_epistemic_log_loss": 0.5617967280661263,
+            "delta_log_loss": 1.0136662933812879e-05
+          },
+          "unseen_holdout": {
+            "n_train": 1191,
+            "n_test": 35,
+            "confidence_only_auroc": 0.6933333333333334,
+            "confidence_plus_epistemic_auroc": 0.6933333333333334,
+            "delta_auroc": 0.0,
+            "confidence_only_log_loss": 0.41151768129236616,
+            "confidence_plus_epistemic_log_loss": 0.4116798529156723,
+            "delta_log_loss": 0.00016217162330611767
+          },
+          "sparse_history_holdout": {
+            "n_train": 1191,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6189189189189189,
+            "confidence_plus_epistemic_auroc": 0.6189189189189189,
+            "delta_auroc": 0.0,
+            "confidence_only_log_loss": 0.5045807775433082,
+            "confidence_plus_epistemic_log_loss": 0.5049203705401479,
+            "delta_log_loss": 0.00033959299683972155
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 1191,
+            "n_test": 204,
+            "confidence_only_auroc": 0.6006683375104428,
+            "confidence_plus_epistemic_auroc": 0.6004296455424275,
+            "delta_auroc": -0.00023869196801529213,
+            "confidence_only_log_loss": 0.5796977413531093,
+            "confidence_plus_epistemic_log_loss": 0.5796862838611231,
+            "delta_log_loss": -1.1457491986166524e-05
+          }
+        },
+        "2022_2023_pooled__unscaled": {
+          "2023_test": {
+            "n_train": 2372,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.6037476503759398,
+            "confidence_plus_epistemic_auroc": 0.595093201754386,
+            "delta_auroc": -0.008654448621553845,
+            "confidence_only_log_loss": 0.5433291811407343,
+            "confidence_plus_epistemic_log_loss": 0.5426469061420357,
+            "delta_log_loss": -0.000682274998698551
+          },
+          "2024_2025_holdout": {
+            "n_train": 2372,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5968904471280786,
+            "confidence_plus_epistemic_auroc": 0.5975708782409211,
+            "delta_auroc": 0.00068043111284255,
+            "confidence_only_log_loss": 0.5626113193451047,
+            "confidence_plus_epistemic_log_loss": 0.5631408362272365,
+            "delta_log_loss": 0.0005295168821318752
+          },
+          "unseen_holdout": {
+            "n_train": 2372,
+            "n_test": 35,
+            "confidence_only_auroc": 0.6933333333333334,
+            "confidence_plus_epistemic_auroc": 0.7000000000000001,
+            "delta_auroc": 0.00666666666666671,
+            "confidence_only_log_loss": 0.41553195072306687,
+            "confidence_plus_epistemic_log_loss": 0.41122511926562844,
+            "delta_log_loss": -0.004306831457438431
+          },
+          "sparse_history_holdout": {
+            "n_train": 2372,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6189189189189189,
+            "confidence_plus_epistemic_auroc": 0.6486486486486487,
+            "delta_auroc": 0.02972972972972976,
+            "confidence_only_log_loss": 0.5065459502961482,
+            "confidence_plus_epistemic_log_loss": 0.4994745834471787,
+            "delta_log_loss": -0.007071366848969529
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 2372,
+            "n_test": 204,
+            "confidence_only_auroc": 0.6006683375104428,
+            "confidence_plus_epistemic_auroc": 0.6034132951426184,
+            "delta_auroc": 0.0027449576321756375,
+            "confidence_only_log_loss": 0.581671251872012,
+            "confidence_plus_epistemic_log_loss": 0.5821950198638595,
+            "delta_log_loss": 0.0005237679918475013
+          }
+        },
+        "2022_2023_pooled__scaled": {
+          "2023_test": {
+            "n_train": 2372,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.6037476503759398,
+            "confidence_plus_epistemic_auroc": 0.5999804197994988,
+            "delta_auroc": -0.0037672305764410163,
+            "confidence_only_log_loss": 0.5434967966867374,
+            "confidence_plus_epistemic_log_loss": 0.5429737306805459,
+            "delta_log_loss": -0.0005230660061915637
+          },
+          "2024_2025_holdout": {
+            "n_train": 2372,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5968904471280786,
+            "confidence_plus_epistemic_auroc": 0.5974271739600918,
+            "delta_auroc": 0.0005367268320132235,
+            "confidence_only_log_loss": 0.5621796044280688,
+            "confidence_plus_epistemic_log_loss": 0.5623297803891413,
+            "delta_log_loss": 0.000150175961072474
+          },
+          "unseen_holdout": {
+            "n_train": 2372,
+            "n_test": 35,
+            "confidence_only_auroc": 0.6933333333333334,
+            "confidence_plus_epistemic_auroc": 0.68,
+            "delta_auroc": -0.013333333333333308,
+            "confidence_only_log_loss": 0.41220239328012437,
+            "confidence_plus_epistemic_log_loss": 0.41052070082991293,
+            "delta_log_loss": -0.001681692450211436
+          },
+          "sparse_history_holdout": {
+            "n_train": 2372,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6189189189189189,
+            "confidence_plus_epistemic_auroc": 0.6297297297297297,
+            "delta_auroc": 0.010810810810810811,
+            "confidence_only_log_loss": 0.505123942358522,
+            "confidence_plus_epistemic_log_loss": 0.5017471196466845,
+            "delta_log_loss": -0.0033768227118374794
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 2372,
+            "n_test": 204,
+            "confidence_only_auroc": 0.6006683375104428,
+            "confidence_plus_epistemic_auroc": 0.602219835302542,
+            "delta_auroc": 0.0015514977920991768,
+            "confidence_only_log_loss": 0.5809879689102061,
+            "confidence_plus_epistemic_log_loss": 0.5811890579910705,
+            "delta_log_loss": 0.0002010890808643584
+          }
+        }
+      }
+    },
+    {
+      "seed": 123,
+      "evaluations": {
+        "2022_only__unscaled": {
+          "2023_test": {
+            "n_train": 1191,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.5979255381490017,
+            "confidence_plus_epistemic_auroc": 0.5889010430909872,
+            "delta_auroc": -0.009024495058014503,
+            "confidence_only_log_loss": 0.5444169971915374,
+            "confidence_plus_epistemic_log_loss": 0.5447603518899924,
+            "delta_log_loss": 0.00034335469845503397
+          },
+          "2024_2025_holdout": {
+            "n_train": 1191,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5972465231433135,
+            "confidence_plus_epistemic_auroc": 0.5977340783822849,
+            "delta_auroc": 0.0004875552389713711,
+            "confidence_only_log_loss": 0.562478919433559,
+            "confidence_plus_epistemic_log_loss": 0.5629248201553856,
+            "delta_log_loss": 0.00044590072182659757
+          },
+          "unseen_holdout": {
+            "n_train": 1191,
+            "n_test": 35,
+            "confidence_only_auroc": 0.68,
+            "confidence_plus_epistemic_auroc": 0.7066666666666667,
+            "delta_auroc": 0.026666666666666616,
+            "confidence_only_log_loss": 0.4185301958803918,
+            "confidence_plus_epistemic_log_loss": 0.4172003211276479,
+            "delta_log_loss": -0.0013298747527439314
+          },
+          "sparse_history_holdout": {
+            "n_train": 1191,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6621621621621621,
+            "confidence_plus_epistemic_auroc": 0.654054054054054,
+            "delta_auroc": -0.008108108108108025,
+            "confidence_only_log_loss": 0.5014392566317981,
+            "confidence_plus_epistemic_log_loss": 0.5006308930875861,
+            "delta_log_loss": -0.0008083635442119874
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 1191,
+            "n_test": 204,
+            "confidence_only_auroc": 0.5947010383100608,
+            "confidence_plus_epistemic_auroc": 0.591359350757847,
+            "delta_auroc": -0.003341687552213868,
+            "confidence_only_log_loss": 0.581055135206937,
+            "confidence_plus_epistemic_log_loss": 0.5814447223764698,
+            "delta_log_loss": 0.00038958716953285677
+          }
+        },
+        "2022_only__scaled": {
+          "2023_test": {
+            "n_train": 1191,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.5979255381490017,
+            "confidence_plus_epistemic_auroc": 0.598910028518967,
+            "delta_auroc": 0.0009844903699652852,
+            "confidence_only_log_loss": 0.5447213502769971,
+            "confidence_plus_epistemic_log_loss": 0.5447472079089161,
+            "delta_log_loss": 2.5857631918979607e-05
+          },
+          "2024_2025_holdout": {
+            "n_train": 1191,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5972465231433135,
+            "confidence_plus_epistemic_auroc": 0.5968696187387188,
+            "delta_auroc": -0.0003769044045947023,
+            "confidence_only_log_loss": 0.5611420836955613,
+            "confidence_plus_epistemic_log_loss": 0.5610949391694038,
+            "delta_log_loss": -4.714452615750542e-05
+          },
+          "unseen_holdout": {
+            "n_train": 1191,
+            "n_test": 35,
+            "confidence_only_auroc": 0.68,
+            "confidence_plus_epistemic_auroc": 0.6799999999999999,
+            "delta_auroc": -1.1102230246251565e-16,
+            "confidence_only_log_loss": 0.4118657653840608,
+            "confidence_plus_epistemic_log_loss": 0.4117905959694885,
+            "delta_log_loss": -7.516941457225146e-05
+          },
+          "sparse_history_holdout": {
+            "n_train": 1191,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6621621621621621,
+            "confidence_plus_epistemic_auroc": 0.6621621621621622,
+            "delta_auroc": 1.1102230246251565e-16,
+            "confidence_only_log_loss": 0.4964641684752552,
+            "confidence_plus_epistemic_log_loss": 0.49638187752671736,
+            "delta_log_loss": -8.229094853784424e-05
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 1191,
+            "n_test": 204,
+            "confidence_only_auroc": 0.5947010383100608,
+            "confidence_plus_epistemic_auroc": 0.5951784222460914,
+            "delta_auroc": 0.00047738393603058427,
+            "confidence_only_log_loss": 0.5793418723724899,
+            "confidence_plus_epistemic_log_loss": 0.5792985791572468,
+            "delta_log_loss": -4.3293215243100924e-05
+          }
+        },
+        "2022_2023_pooled__unscaled": {
+          "2023_test": {
+            "n_train": 2372,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.5979255381490017,
+            "confidence_plus_epistemic_auroc": 0.5922100246122592,
+            "delta_auroc": -0.005715513536742489,
+            "confidence_only_log_loss": 0.5442391802062932,
+            "confidence_plus_epistemic_log_loss": 0.5443837444207226,
+            "delta_log_loss": 0.00014456421442932132
+          },
+          "2024_2025_holdout": {
+            "n_train": 2372,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5972465231433135,
+            "confidence_plus_epistemic_auroc": 0.5980556573696914,
+            "delta_auroc": 0.00080913422637785,
+            "confidence_only_log_loss": 0.5624109539904621,
+            "confidence_plus_epistemic_log_loss": 0.5627690489310515,
+            "delta_log_loss": 0.00035809494058935964
+          },
+          "unseen_holdout": {
+            "n_train": 2372,
+            "n_test": 35,
+            "confidence_only_auroc": 0.68,
+            "confidence_plus_epistemic_auroc": 0.7066666666666667,
+            "delta_auroc": 0.026666666666666616,
+            "confidence_only_log_loss": 0.4155799738277489,
+            "confidence_plus_epistemic_log_loss": 0.41520475619109126,
+            "delta_log_loss": -0.0003752176366576543
+          },
+          "sparse_history_holdout": {
+            "n_train": 2372,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6621621621621621,
+            "confidence_plus_epistemic_auroc": 0.6675675675675676,
+            "delta_auroc": 0.005405405405405572,
+            "confidence_only_log_loss": 0.49997446847896293,
+            "confidence_plus_epistemic_log_loss": 0.4998213540363149,
+            "delta_log_loss": -0.00015311444264803908
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 2372,
+            "n_test": 204,
+            "confidence_only_auroc": 0.5947010383100608,
+            "confidence_plus_epistemic_auroc": 0.593984962406015,
+            "delta_auroc": -0.0007160759040458764,
+            "confidence_only_log_loss": 0.5813366783113735,
+            "confidence_plus_epistemic_log_loss": 0.5816494009654366,
+            "delta_log_loss": 0.0003127226540631245
+          }
+        },
+        "2022_2023_pooled__scaled": {
+          "2023_test": {
+            "n_train": 2372,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.5979255381490017,
+            "confidence_plus_epistemic_auroc": 0.5984920107825135,
+            "delta_auroc": 0.0005664726335117276,
+            "confidence_only_log_loss": 0.5442847920389936,
+            "confidence_plus_epistemic_log_loss": 0.5442906718073802,
+            "delta_log_loss": 5.879768386618522e-06
+          },
+          "2024_2025_holdout": {
+            "n_train": 2372,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5972465231433135,
+            "confidence_plus_epistemic_auroc": 0.5971393301475114,
+            "delta_auroc": -0.00010719299580208563,
+            "confidence_only_log_loss": 0.5617154715283739,
+            "confidence_plus_epistemic_log_loss": 0.5616849009850396,
+            "delta_log_loss": -3.057054333421849e-05
+          },
+          "unseen_holdout": {
+            "n_train": 2372,
+            "n_test": 35,
+            "confidence_only_auroc": 0.68,
+            "confidence_plus_epistemic_auroc": 0.68,
+            "delta_auroc": 0.0,
+            "confidence_only_log_loss": 0.41220428124255654,
+            "confidence_plus_epistemic_log_loss": 0.41218487064052745,
+            "delta_log_loss": -1.941060202909073e-05
+          },
+          "sparse_history_holdout": {
+            "n_train": 2372,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6621621621621621,
+            "confidence_plus_epistemic_auroc": 0.6621621621621621,
+            "delta_auroc": 0.0,
+            "confidence_only_log_loss": 0.4975140266630734,
+            "confidence_plus_epistemic_log_loss": 0.4974851853635309,
+            "delta_log_loss": -2.8841299542503585e-05
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 2372,
+            "n_test": 204,
+            "confidence_only_auroc": 0.5947010383100608,
+            "confidence_plus_epistemic_auroc": 0.5951784222460913,
+            "delta_auroc": 0.00047738393603047324,
+            "confidence_only_log_loss": 0.5805280126122895,
+            "confidence_plus_epistemic_log_loss": 0.5805005631885493,
+            "delta_log_loss": -2.74494237402223e-05
+          }
+        }
+      }
+    },
+    {
+      "seed": 777,
+      "evaluations": {
+        "2022_only__unscaled": {
+          "2023_test": {
+            "n_train": 1191,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.5966832050630932,
+            "confidence_plus_epistemic_auroc": 0.5727936867601672,
+            "delta_auroc": -0.02388951830292607,
+            "confidence_only_log_loss": 0.5463326632832073,
+            "confidence_plus_epistemic_log_loss": 0.5480008356335878,
+            "delta_log_loss": 0.0016681723503805257
+          },
+          "2024_2025_holdout": {
+            "n_train": 1191,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5954034951832309,
+            "confidence_plus_epistemic_auroc": 0.5952530792052504,
+            "delta_auroc": -0.00015041597798048922,
+            "confidence_only_log_loss": 0.564922245254579,
+            "confidence_plus_epistemic_log_loss": 0.5628842801574062,
+            "delta_log_loss": -0.0020379650971728003
+          },
+          "unseen_holdout": {
+            "n_train": 1191,
+            "n_test": 35,
+            "confidence_only_auroc": 0.7066666666666667,
+            "confidence_plus_epistemic_auroc": 0.7133333333333334,
+            "delta_auroc": 0.00666666666666671,
+            "confidence_only_log_loss": 0.42654637493228886,
+            "confidence_plus_epistemic_log_loss": 0.4146279295492355,
+            "delta_log_loss": -0.011918445383053367
+          },
+          "sparse_history_holdout": {
+            "n_train": 1191,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6621621621621622,
+            "confidence_plus_epistemic_auroc": 0.6594594594594595,
+            "delta_auroc": -0.002702702702702675,
+            "confidence_only_log_loss": 0.5105657302711321,
+            "confidence_plus_epistemic_log_loss": 0.5008255629169783,
+            "delta_log_loss": -0.009740167354153728
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 1191,
+            "n_test": 204,
+            "confidence_only_auroc": 0.5813342881012054,
+            "confidence_plus_epistemic_auroc": 0.5656999641962048,
+            "delta_auroc": -0.015634323905000524,
+            "confidence_only_log_loss": 0.5871999423493343,
+            "confidence_plus_epistemic_log_loss": 0.5881052621184145,
+            "delta_log_loss": 0.0009053197690802595
+          }
+        },
+        "2022_only__scaled": {
+          "2023_test": {
+            "n_train": 1191,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.5966832050630932,
+            "confidence_plus_epistemic_auroc": 0.5869203422276048,
+            "delta_auroc": -0.00976286283548844,
+            "confidence_only_log_loss": 0.5458727960365479,
+            "confidence_plus_epistemic_log_loss": 0.5465149009941621,
+            "delta_log_loss": 0.0006421049576141868
+          },
+          "2024_2025_holdout": {
+            "n_train": 1191,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5954034951832309,
+            "confidence_plus_epistemic_auroc": 0.5966932689714314,
+            "delta_auroc": 0.001289773788200499,
+            "confidence_only_log_loss": 0.5611830145492136,
+            "confidence_plus_epistemic_log_loss": 0.5610455872752608,
+            "delta_log_loss": -0.00013742727395282817
+          },
+          "unseen_holdout": {
+            "n_train": 1191,
+            "n_test": 35,
+            "confidence_only_auroc": 0.7066666666666667,
+            "confidence_plus_epistemic_auroc": 0.72,
+            "delta_auroc": 0.013333333333333308,
+            "confidence_only_log_loss": 0.4159732898362279,
+            "confidence_plus_epistemic_log_loss": 0.4136010103487421,
+            "delta_log_loss": -0.0023722794874858066
+          },
+          "sparse_history_holdout": {
+            "n_train": 1191,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6621621621621622,
+            "confidence_plus_epistemic_auroc": 0.6594594594594594,
+            "delta_auroc": -0.002702702702702786,
+            "confidence_only_log_loss": 0.5052017571936568,
+            "confidence_plus_epistemic_log_loss": 0.5022937313381627,
+            "delta_log_loss": -0.0029080258554941008
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 1191,
+            "n_test": 204,
+            "confidence_only_auroc": 0.5813342881012054,
+            "confidence_plus_epistemic_auroc": 0.576202410788877,
+            "delta_auroc": -0.005131877312328337,
+            "confidence_only_log_loss": 0.585245645961267,
+            "confidence_plus_epistemic_log_loss": 0.585971576772553,
+            "delta_log_loss": 0.0007259308112859131
+          }
+        },
+        "2022_2023_pooled__unscaled": {
+          "2023_test": {
+            "n_train": 2372,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.5966832050630932,
+            "confidence_plus_epistemic_auroc": 0.5772356135484629,
+            "delta_auroc": -0.01944759151463038,
+            "confidence_only_log_loss": 0.5456898833000846,
+            "confidence_plus_epistemic_log_loss": 0.5468675315838314,
+            "delta_log_loss": 0.0011776482837467794
+          },
+          "2024_2025_holdout": {
+            "n_train": 2372,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5954034951832309,
+            "confidence_plus_epistemic_auroc": 0.5959308155658062,
+            "delta_auroc": 0.0005273203825753026,
+            "confidence_only_log_loss": 0.5637906605958948,
+            "confidence_plus_epistemic_log_loss": 0.5630345003225583,
+            "delta_log_loss": -0.0007561602733364703
+          },
+          "unseen_holdout": {
+            "n_train": 2372,
+            "n_test": 35,
+            "confidence_only_auroc": 0.7066666666666667,
+            "confidence_plus_epistemic_auroc": 0.7266666666666666,
+            "delta_auroc": 0.019999999999999907,
+            "confidence_only_log_loss": 0.42238089402828466,
+            "confidence_plus_epistemic_log_loss": 0.415355747743013,
+            "delta_log_loss": -0.007025146285271677
+          },
+          "sparse_history_holdout": {
+            "n_train": 2372,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6621621621621622,
+            "confidence_plus_epistemic_auroc": 0.6567567567567567,
+            "delta_auroc": -0.005405405405405461,
+            "confidence_only_log_loss": 0.5085830416617896,
+            "confidence_plus_epistemic_log_loss": 0.5022919380273835,
+            "delta_log_loss": -0.006291103634406103
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 2372,
+            "n_test": 204,
+            "confidence_only_auroc": 0.5813342881012054,
+            "confidence_plus_epistemic_auroc": 0.5699964196204799,
+            "delta_auroc": -0.011337868480725488,
+            "confidence_only_log_loss": 0.5869435644373222,
+            "confidence_plus_epistemic_log_loss": 0.5878205828108749,
+            "delta_log_loss": 0.000877018373552696
+          }
+        },
+        "2022_2023_pooled__scaled": {
+          "2023_test": {
+            "n_train": 2372,
+            "n_test": 1181,
+            "confidence_only_auroc": 0.5966832050630932,
+            "confidence_plus_epistemic_auroc": 0.5928350978630308,
+            "delta_auroc": -0.003848107200062456,
+            "confidence_only_log_loss": 0.5454333504899328,
+            "confidence_plus_epistemic_log_loss": 0.5455718036045468,
+            "delta_log_loss": 0.00013845311461402332
+          },
+          "2024_2025_holdout": {
+            "n_train": 2372,
+            "n_test": 1728,
+            "confidence_only_auroc": 0.5954034951832309,
+            "confidence_plus_epistemic_auroc": 0.5962783283425197,
+            "delta_auroc": 0.0008748331592888237,
+            "confidence_only_log_loss": 0.56180537286079,
+            "confidence_plus_epistemic_log_loss": 0.5616725884801795,
+            "delta_log_loss": -0.00013278438061048448
+          },
+          "unseen_holdout": {
+            "n_train": 2372,
+            "n_test": 35,
+            "confidence_only_auroc": 0.7066666666666667,
+            "confidence_plus_epistemic_auroc": 0.7133333333333334,
+            "delta_auroc": 0.00666666666666671,
+            "confidence_only_log_loss": 0.41634356362851604,
+            "confidence_plus_epistemic_log_loss": 0.4153669544109123,
+            "delta_log_loss": -0.00097660921760373
+          },
+          "sparse_history_holdout": {
+            "n_train": 2372,
+            "n_test": 47,
+            "confidence_only_auroc": 0.6621621621621622,
+            "confidence_plus_epistemic_auroc": 0.654054054054054,
+            "delta_auroc": -0.008108108108108136,
+            "confidence_only_log_loss": 0.5055712041140424,
+            "confidence_plus_epistemic_log_loss": 0.5044439601401421,
+            "delta_log_loss": -0.0011272439739002937
+          },
+          "underrepresented_sector_holdout": {
+            "n_train": 2372,
+            "n_test": 204,
+            "confidence_only_auroc": 0.5813342881012054,
+            "confidence_plus_epistemic_auroc": 0.5795440983410909,
+            "delta_auroc": -0.001790189760114469,
+            "confidence_only_log_loss": 0.5860504880174061,
+            "confidence_plus_epistemic_log_loss": 0.5861866707947108,
+            "delta_log_loss": 0.00013618277730464978
+          }
+        }
+      }
+    }
+  ],
+  "aggregate": {
+    "2022_only__unscaled": {
+      "2023_test": {
+        "delta_auroc_mean": -0.013854848647464705,
+        "delta_auroc_std": 0.007097225199759258,
+        "delta_log_loss_mean": 0.00043165425913445815,
+        "delta_log_loss_std": 0.0009755647247161716,
+        "epistemic_beats_auc_seeds": 0,
+        "epistemic_beats_log_loss_seeds": 1
+      },
+      "2024_2025_holdout": {
+        "delta_auroc_mean": 0.0003397672502369516,
+        "delta_auroc_std": 0.0003556006125137545,
+        "delta_log_loss_mean": -0.0004183503272291815,
+        "delta_log_loss_std": 0.0011461029956112232,
+        "epistemic_beats_auc_seeds": 2,
+        "epistemic_beats_log_loss_seeds": 1
+      },
+      "unseen_holdout": {
+        "delta_auroc_mean": 0.013333333333333345,
+        "delta_auroc_std": 0.00942809041582059,
+        "delta_log_loss_mean": -0.0062854919777191225,
+        "delta_log_loss_std": 0.004349217954543125,
+        "epistemic_beats_auc_seeds": 3,
+        "epistemic_beats_log_loss_seeds": 3
+      },
+      "sparse_history_holdout": {
+        "delta_auroc_mean": 0.006306306306306353,
+        "delta_auroc_std": 0.01670922251440666,
+        "delta_log_loss_mean": -0.006097385933959328,
+        "delta_log_loss_std": 0.0038276939813416296,
+        "epistemic_beats_auc_seeds": 1,
+        "epistemic_beats_log_loss_seeds": 3
+      },
+      "underrepresented_sector_holdout": {
+        "delta_auroc_mean": -0.0054103512750129186,
+        "delta_auroc_std": 0.007644563412613993,
+        "delta_log_loss_mean": 0.0005436840495111431,
+        "delta_log_loss_std": 0.00025664411937286694,
+        "epistemic_beats_auc_seeds": 1,
+        "epistemic_beats_log_loss_seeds": 0
+      }
+    },
+    "2022_only__scaled": {
+      "2023_test": {
+        "delta_auroc_mean": -0.002765566511064077,
+        "delta_auroc_std": 0.004952092031505427,
+        "delta_log_loss_mean": 0.00025186409397689086,
+        "delta_log_loss_std": 0.00027709191688346263,
+        "epistemic_beats_auc_seeds": 2,
+        "epistemic_beats_log_loss_seeds": 0
+      },
+      "2024_2025_holdout": {
+        "delta_auroc_mean": 0.0002696622569860289,
+        "delta_auroc_std": 0.0007298885197101608,
+        "delta_log_loss_mean": -5.8145045725506904e-05,
+        "delta_log_loss_std": 6.074283189779478e-05,
+        "epistemic_beats_auc_seeds": 1,
+        "epistemic_beats_log_loss_seeds": 2
+      },
+      "unseen_holdout": {
+        "delta_auroc_mean": 0.004444444444444399,
+        "delta_auroc_std": 0.0062853936105471036,
+        "delta_log_loss_mean": -0.0007617590929173135,
+        "delta_log_loss_std": 0.0011429245084595007,
+        "epistemic_beats_auc_seeds": 1,
+        "epistemic_beats_log_loss_seeds": 2
+      },
+      "sparse_history_holdout": {
+        "delta_auroc_mean": -0.0009009009009008917,
+        "delta_auroc_std": 0.0012740662724082593,
+        "delta_log_loss_mean": -0.0008835746023974078,
+        "delta_log_loss_std": 0.0014418272372156596,
+        "epistemic_beats_auc_seeds": 1,
+        "epistemic_beats_log_loss_seeds": 2
+      },
+      "underrepresented_sector_holdout": {
+        "delta_auroc_mean": -0.0016310617814376815,
+        "delta_auroc_std": 0.0024926522970633368,
+        "delta_log_loss_mean": 0.0002237267013522152,
+        "delta_log_loss_std": 0.00035534969100361433,
+        "epistemic_beats_auc_seeds": 1,
+        "epistemic_beats_log_loss_seeds": 2
+      }
+    },
+    "2022_2023_pooled__unscaled": {
+      "2023_test": {
+        "delta_auroc_mean": -0.011272517890975572,
+        "delta_auroc_std": 0.005903852212599059,
+        "delta_log_loss_mean": 0.0002133124998258499,
+        "delta_log_loss_std": 0.0007608650336751694,
+        "epistemic_beats_auc_seeds": 0,
+        "epistemic_beats_log_loss_seeds": 1
+      },
+      "2024_2025_holdout": {
+        "delta_auroc_mean": 0.0006722952405985675,
+        "delta_auroc_std": 0.0001151937641615768,
+        "delta_log_loss_mean": 4.3817183128254854e-05,
+        "delta_log_loss_std": 0.0005699820574072952,
+        "epistemic_beats_auc_seeds": 3,
+        "epistemic_beats_log_loss_seeds": 1
+      },
+      "unseen_holdout": {
+        "delta_auroc_mean": 0.017777777777777743,
+        "delta_auroc_std": 0.008314794192830936,
+        "delta_log_loss_mean": -0.0039023984597892545,
+        "delta_log_loss_std": 0.002729842766547188,
+        "epistemic_beats_auc_seeds": 3,
+        "epistemic_beats_log_loss_seeds": 3
+      },
+      "sparse_history_holdout": {
+        "delta_auroc_mean": 0.009909909909909956,
+        "delta_auroc_std": 0.014693249036306403,
+        "delta_log_loss_mean": -0.004505194975341224,
+        "delta_log_loss_std": 0.0030938278764108666,
+        "epistemic_beats_auc_seeds": 2,
+        "epistemic_beats_log_loss_seeds": 3
+      },
+      "underrepresented_sector_holdout": {
+        "delta_auroc_mean": -0.0031029955841985757,
+        "delta_auroc_std": 0.0059919132726911,
+        "delta_log_loss_mean": 0.0005711696731544406,
+        "delta_log_loss_std": 0.0002327983452140597,
+        "epistemic_beats_auc_seeds": 1,
+        "epistemic_beats_log_loss_seeds": 0
+      }
+    },
+    "2022_2023_pooled__scaled": {
+      "2023_test": {
+        "delta_auroc_mean": -0.0023496217143305818,
+        "delta_auroc_std": 0.002062254420321039,
+        "delta_log_loss_mean": -0.00012624437439697397,
+        "delta_log_loss_std": 0.0002857673629925498,
+        "epistemic_beats_auc_seeds": 1,
+        "epistemic_beats_log_loss_seeds": 1
+      },
+      "2024_2025_holdout": {
+        "delta_auroc_mean": 0.00043478899849998715,
+        "delta_auroc_std": 0.00040733878917242655,
+        "delta_log_loss_mean": -4.392987624076324e-06,
+        "delta_log_loss_std": 0.00011699170072716654,
+        "epistemic_beats_auc_seeds": 2,
+        "epistemic_beats_log_loss_seeds": 2
+      },
+      "unseen_holdout": {
+        "delta_auroc_mean": -0.0022222222222221997,
+        "delta_auroc_std": 0.008314794192830984,
+        "delta_log_loss_mean": -0.0008925707566147523,
+        "delta_log_loss_std": 0.0006812205139273555,
+        "epistemic_beats_auc_seeds": 1,
+        "epistemic_beats_log_loss_seeds": 3
+      },
+      "sparse_history_holdout": {
+        "delta_auroc_mean": 0.0009009009009008917,
+        "delta_auroc_std": 0.007749842582921296,
+        "delta_log_loss_mean": -0.001510969328426759,
+        "delta_log_loss_std": 0.0013934797558744826,
+        "epistemic_beats_auc_seeds": 1,
+        "epistemic_beats_log_loss_seeds": 3
+      },
+      "underrepresented_sector_holdout": {
+        "delta_auroc_mean": 7.95639893383937e-05,
+        "delta_auroc_std": 0.0013929380116967335,
+        "delta_log_loss_mean": 0.00010327414480959529,
+        "delta_log_loss_std": 9.61585343456156e-05,
+        "epistemic_beats_auc_seeds": 2,
+        "epistemic_beats_log_loss_seeds": 1
+      }
+    }
+  }
+}
