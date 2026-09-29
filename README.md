@@ -75,6 +75,9 @@ A genuinely new follow-up should therefore use a separately pre-specified task o
 
 - `docs/research_spec.md` — full research framing and experiment chain.
 - `docs/distribution_shift_results.md` — consolidated distribution-shift evidence and stopping rationale.
+- `docs/claims_to_code_mapping.md` — claim-by-claim mapping between research spec and supporting artifacts.
+- `docs/reproducibility.md` — environment setup, experiment provenance, and exact commands connecting experimental stages.
 - `results/` — small reproducible result summaries.
+- `scripts/verify_reproducibility.py` — lightweight verification command to audit repository consistency without retraining.
 
 Large prediction files and checkpoints remain local artifacts.
