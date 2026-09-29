@@ -19,6 +19,21 @@ The current conclusion is therefore:
 
 This is treated as a controlled negative result rather than as evidence that Bayesian uncertainty is never useful.
 
+## Research Artifact Status
+
+> [!IMPORTANT]
+> **Study Status: Complete, Audited, and Frozen**
+>
+> 1. **Completed & Closed Study:** The 2022–2025 research study is finalized and closed. Under the study's pre-specified stopping rule, further subgroup searches, allocation transformations, or parameter tuning on the inspected 2022–2025 sample are intentionally out of scope.
+> 2. **Controlled Negative Result:** The headline conclusion is a controlled negative result: while Bayesian-LoRA epistemic uncertainty contains a real diagnostic signal correlated with prediction difficulty, it provides no robust incremental decision or error-detection value beyond ordinary deterministic classifier confidence ($1 - 2|p - 0.5|$) under the tested protocols, concentration-matched portfolios, model-risk penalty optimizations, or distribution-shift subgroups.
+> 3. **Adversarial Audit & Remediation:** The computational appendix underwent an adversarial scientific audit. All findings (**FALSIFY-01** through **FALSIFY-06**) were remediated or explicitly documented in [docs/audit_log.md](docs/audit_log.md) without altering frozen historical results or committed numerical outputs.
+> 4. **Dual Verification Paths:**
+>    - **Clean-Clone Verification (Default):** Runs via `uv run python scripts/verify_reproducibility.py` and requires zero untracked prediction CSVs or checkpoints, passing reliably in clean-clone CI environments.
+>    - **Deep Local Verification:** When local prediction artifacts are present in `artifacts/`, `uv run python scripts/verify_reproducibility.py --deep` recomputes AUROCs and portfolio allocations directly from raw Monte Carlo prediction files.
+> 5. **Methodological Sensitivity Analysis:** The discovered meta-model discrepancies (predictor scaling and 2022-only vs. 2022–2023 training windows) were tested under a complete $2 \times 2$ factorial cross in [docs/meta_model_sensitivity_analysis.md](docs/meta_model_sensitivity_analysis.md), confirming that the headline negative result is completely invariant to these choices ($\Delta\text{AUROC} \le 0.0007$ on holdout).
+>
+> For full details, see the [Research Specification](docs/research_spec.md), [Claims-to-Code Mapping](docs/claims_to_code_mapping.md), [Reproducibility Guide](docs/reproducibility.md), [Audit Log](docs/audit_log.md), and [Sensitivity Analysis](docs/meta_model_sensitivity_analysis.md).
+
 ## Experimental progression
 
 ### FNSPID pilot
@@ -77,6 +92,8 @@ A genuinely new follow-up should therefore use a separately pre-specified task o
 - `docs/distribution_shift_results.md` — consolidated distribution-shift evidence and stopping rationale.
 - `docs/claims_to_code_mapping.md` — claim-by-claim mapping between research spec and supporting artifacts.
 - `docs/reproducibility.md` — environment setup, experiment provenance, and exact commands connecting experimental stages.
+- `docs/audit_log.md` — adversarial audit remediation log (FALSIFY-01 to FALSIFY-06).
+- `docs/meta_model_sensitivity_analysis.md` — 2x2 sensitivity analysis on meta-model specifications.
 - `results/` — small reproducible result summaries.
 - `scripts/verify_reproducibility.py` — lightweight verification command to audit repository consistency without retraining.
 

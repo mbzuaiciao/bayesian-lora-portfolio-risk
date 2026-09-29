@@ -72,3 +72,32 @@ Following an adversarial audit of the computational appendix, six specific findi
 | **FALSIFY-05** | Test coupling: `test_results_and_stability.py` combined pure mathematical unit tests with frozen artifact regression snapshot checks without distinguishing them. | Strictly decoupled mathematical tests into `tests/test_numerical_stability.py` (property checks, precision limits, boundary conditions) and refactored `tests/test_results_and_stability.py` into explicitly documented artifact snapshot invariants. | All 50 pytest tests pass independently. |
 | **FALSIFY-06** | Allocation crash on degenerate all-zero raw scores (e.g. $p \equiv 0.5$ everywhere where confidence reliability is zero). | Enhanced `normalize_same_gross`, `compute_allocation_weights`, and `allocation_metrics` in `src/.../uncertainty/evaluation.py` with `fallback_equal=True` parameter returning uniform equal weights of 1.0. Added unit tests in `tests/test_evaluation_metrics.py`. | Degenerate edge cases return uniform weights safely; all non-zero historical calculations remain strictly identical. |
 
+---
+
+## 6. Pyright Static Typing Audit & Warning Classification
+
+A strict static typing audit was performed across all 20 tracked Python modules via `uv run pyright`.
+
+### Audit Summary
+- **Errors:** 0
+- **Warnings:** 47
+- **Information:** 0
+
+### Warning Classification
+
+| Category | Count | Source Files | Description & Root Cause | Correctness / Safety Assessment |
+|---|---|---|---|---|
+| **Pandas Union-Expansion Friction** | 36 | `src/bayesian_lora_portfolio_risk/data/audit.py` (L50) | Calling `.mean()` on `pd.to_numeric(frame["article_count"])`. The `pandas-stubs` type definition returns a broad 13-type union (`float \| int \| Number \| NAType \| NaTType \| Timestamp \| Timedelta \| ExtensionArray \| Series \| ...`). Pyright checks attribute access on every union member and warns for non-Series branches (`reportAttributeAccessIssue`). | **Benign stub limitation.** At runtime, `pd.to_numeric` on a Series always produces a Series of numeric values. |
+| **Pandas Method Overload Resolution** | 5 | `audit.py` (L41), `builder.py` (L153), `hf_news.py` (L67) | Overloaded returns for `.isin().all()`, `sort_values("date")`, and `pd.to_datetime(...)`. The stub signatures define overloaded unions containing `BooleanArray` and `ExtensionArray` (`reportCallIssue`, `reportArgumentType`). | **Benign stub limitation.** Standard idiom in pandas data manipulation. |
+| **Pandas Series Indexing Union Types** | 3 | `src/bayesian_lora_portfolio_risk/uncertainty/evaluation.py` (L250-253) | Boolean indexing `pre_sector_counts[mask]` produces a union `Series \| ndarray` in stubs, triggering warnings when accessing `.quantile()`, `.index`, or converting `.index` to a set (`reportAttributeAccessIssue`, `reportReturnType`). | **Benign stub limitation.** `pre_sector_counts` is guaranteed to be a `pd.Series`. |
+| **Test Parameter Narrowing Friction** | 3 | `tests/test_leakage_and_invariants.py` (L83, 88, 95) | Passing column slice `df["symbol"]` (typed as `Series \| DataFrame` by `DataFrame.__getitem__` stubs) into helper functions expecting `pd.Series` (`reportArgumentType`). | **Benign test stub typing.** Single column string key always yields a `pd.Series`. |
+| **Actionable Correctness Bugs** | 0 | None | No functional or numerical defects identified. | **None.** |
+
+### Policy Compliance
+In strict adherence to the release constraints:
+- Pyright configuration was **not** weakened.
+- No blanket `# type: ignore` annotations were added.
+- No unjustified type casts were introduced.
+- No numerical or scientific code was modified merely to satisfy external type stubs.
+
+
