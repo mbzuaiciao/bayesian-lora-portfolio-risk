@@ -89,6 +89,7 @@ A genuinely new follow-up should therefore use a separately pre-specified task o
 ## Repository guide
 
 - `docs/research_spec.md` — full research framing and experiment chain.
+- `docs/project_retrospective.md` — comprehensive end-to-end research and engineering retrospective.
 - `docs/distribution_shift_results.md` — consolidated distribution-shift evidence and stopping rationale.
 - `docs/claims_to_code_mapping.md` — claim-by-claim mapping between research spec and supporting artifacts.
 - `docs/reproducibility.md` — environment setup, experiment provenance, and exact commands connecting experimental stages.
