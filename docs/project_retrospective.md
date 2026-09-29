@@ -79,13 +79,13 @@ The project pivoted to quarterly corporate earnings calls, utilizing long-form d
 - **Observation Unit:** One company earnings episode $(i, q, t_e, D_{i,q})$ consisting of the earnings call transcript or release for company $i$ in quarter $q$ known at disclosure date $t_e$.
 - **Downside Risk Target:** The close-to-close earnings announcement reaction:
   $$r^{(1)}_{i,q} = \frac{P_{i,D+1}^{\text{close}}}{P_{i,D-1}^{\text{close}}} - 1, \quad y_{i,q} = \mathbf{1}\left[r^{(1)}_{i,q} \le \tau\right]$$
-  where $\tau$ was strictly estimated on pre-2022 training data at the 20th percentile ($\tau \approx -0.0384$, representing a 1-day downside move $\le -3.84\%$). Threshold $\tau$ was frozen before evaluating any post-2021 data.
+  where $\tau$ was strictly estimated on pre-2022 training data at the 20th percentile ($\tau \approx -0.0365$, representing a 1-day downside move $\le -3.65\%$, exact floating-point value $-0.03652673221527482$; `results/earnings_lora_stage2_repro/summary.json`). Threshold $\tau$ was frozen before evaluating any post-2021 data.
 - **Audited Price Anchors:** An audit of 18,201 episodes confirmed floating-point exact reconstruction of next-day price moves (`move_1d`) from verified open/high/low/close price anchors (`artifacts/earnings_label_audit/summary.json`).
 
 ### Temporal Split Architecture
 The temporal structure was locked into three non-overlapping, strictly chronological periods:
-1. **Pre-2022 Training Period ($\le 2021\text{-}12\text{-}31$):** Used for threshold estimation ($\tau$), vocabulary extraction, base model pre-training/tuning, and validation hyperparameter selection.
-2. **2022–2023 Development Diagnostic Period ($2022\text{-}01\text{-}01 \text{ to } 2023\text{-}12\text{-}31$, $N = 2,369$):** Used for frozen Bayesian LoRA convergence diagnostics, confidence uncertainty comparisons, and exploratory allocation bridge design.
+1. **Pre-2022 Training Period ($\le 2021\text{-}12\text{-}31$):** Used for threshold estimation ($\tau$), vocabulary extraction, base model pre-training/tuning, and validation hyperparameter selection ($N = 11,918$ training rows, $N = 2,104$ validation rows).
+2. **2022–2023 Development Diagnostic Period ($2022\text{-}01\text{-}01 \text{ to } 2023\text{-}12\text{-}31$, $N = 2,372$):** Used for frozen Bayesian LoRA convergence diagnostics, confidence uncertainty comparisons, and exploratory allocation bridge design ($1,191$ rows in 2022; $1,181$ rows in 2023).
 3. **2024–2025 Final Holdout Period ($2024\text{-}01\text{-}01 \text{ to } 2025\text{-}05\text{-}15$, $N = 1,728$):** Kept completely untouched during all model development; evaluated only once as a final out-of-time confirmation.
 
 ### Deterministic Gate 0 Success & LoRA Selection
@@ -104,11 +104,12 @@ Bayesian LoRA replaces deterministic adapter matrices with variational distribut
 $$A \sim q_\theta(A), \quad B \sim q_\theta(B)$$
 
 In the implementation ([`src/bayesian_lora_portfolio_risk/uncertainty/bayesian_lora.py`](file:///Users/xq/Documents/GitHub/bayesian-lora-portfolio-risk/src/bayesian_lora_portfolio_risk/uncertainty/bayesian_lora.py)):
-- **Variational Posterior:** Mean-field Gaussian posterior $q_\theta(w) = \mathcal{N}(\mu, \sigma^2)$, parameterized by learned mean $\mu$ and unconstrained parameter $\rho$, where standard deviation $\sigma = \text{softplus}(\rho) = \log(1 + e^\rho)$.
+- **Adapter Architecture:** Adapts query, key, value, and output attention projections with frozen rank $r = 16$ and scaling factor $\alpha = 32$ ($\frac{\alpha}{r} = 2.0$, dropout $0.05$), inheriting the winning deterministic capacity settings (`results/earnings_lora_stage2_repro/summary.json`).
+- **Variational Posterior:** Mean-field Gaussian posterior $q_\theta(w) = \mathcal{N}(\mu, \sigma^2)$, parameterized by learned mean $\mu$ and unconstrained parameter $\rho$, where standard deviation $\sigma = \text{softplus}(\rho) = \log(1 + e^\rho)$ initialized with $\sigma_{\text{init}} = 0.01$.
 - **Reparameterization Trick:** Weights are sampled differentiably during training: $w = \mu + \sigma \odot \epsilon$, where $\epsilon \sim \mathcal{N}(0, I)$.
-- **Prior and Objective:** A standard isotropic Gaussian prior $p(w) = \mathcal{N}(0, \sigma_0^2 I)$. Training minimizes the negative Evidence Lower Bound (ELBO):
+- **Prior and Objective:** A standard isotropic Gaussian prior $p(w) = \mathcal{N}(0, \sigma_0^2 I)$ with $\sigma_0 = 1.0$. Training minimizes the negative Evidence Lower Bound (ELBO):
   $$\mathcal{L}(\theta) = \mathbb{E}_{q_\theta(w)} [\mathcal{L}_{\text{BCE}}(y, f_w(x))] + \beta \cdot D_{\text{KL}}(q_\theta(w) \,\|\, p(w))$$
-  where KL weight $\beta = 0.003$ was selected on pre-2022 validation ELBO across a sweep $\beta \in \{0.001, 0.003, 0.01\}$.
+  where KL weight $\beta = 0.003$ was selected on pre-2022 validation ELBO across a sweep $\beta \in \{0.001, 0.003, 0.01\}$ (`scripts/run_earnings_bayesian_lora_beta_sweep.py`).
 
 ### Monte Carlo Posterior Inference
 At evaluation time, the model draws $S = 32$ Monte Carlo parameter samples $w^{(s)} \sim q_\theta(w)$. For each earnings disclosure, the forward pass produces probabilities $p^{(s)} = \sigma(f_{w^{(s)}}(x))$. These samples yield two distinct statistical quantities:
@@ -127,11 +128,11 @@ The first major finding of the earnings-event experiment was positive: **Bayesia
 
 Across three random seeds ($42, 123, 777$), predictions with higher epistemic variance were systematically more error-prone than predictions with low epistemic variance:
 - **Quintile Error Rate Spread (2022–2023 Development Diagnostic):**
-  - Quintile 1 (lowest $\sigma^2_{\text{epi}}$): Mean error rate $\approx 18.2\%$
-  - Quintile 5 (highest $\sigma^2_{\text{epi}}$): Mean error rate $\approx 30.3\%$
-  - Error spread ($Q_5 - Q_1$): $+12.06\%$ across seeds (`results/earnings_bayesian_lora/uncertainty_control_summary.json`).
-- **Error-Detection AUROC:** Epistemic variance alone separated correct from incorrect predictions with an out-of-sample AUROC of $0.580$ on 2022–2023 development data and $0.590$ on the 2024–2025 final holdout.
-- **Selective Risk Invariant:** Retaining only the lowest-uncertainty predictions monotonically reduced the overall portfolio classification error rate.
+  - Quintile 1 (lowest $\sigma^2_{\text{epi}}$): Mean error rate $= 17.89\%$
+  - Quintile 5 (highest $\sigma^2_{\text{epi}}$): Mean error rate $= 29.96\%$
+  - Error spread ($Q_5 - Q_1$): $+12.06\%$ ($+12.063$ percentage points, standard deviation $0.96\%$; `results/earnings_bayesian_lora/repro_summary.json`).
+- **Error-Detection AUROC:** Epistemic variance alone separated correct from incorrect predictions with an out-of-sample AUROC mean of $0.5797$ ($0.580$) on 2022–2023 development data (`results/earnings_bayesian_lora/uncertainty_control_summary.json`) and $0.5909$ ($0.591$) on the 2024–2025 final holdout (`results/earnings_bayesian_lora_final_holdout/summary.json`).
+- **Selective Risk Invariant:** Retaining only the lowest-uncertainty 50% of predictions monotonically reduced the classification error rate from $24.35\%$ full risk down to $20.85\%$ ($S=8$ MC samples, `repro_summary.json`) and $19.93\%$ ($S=32$ MC samples, `uncertainty_control_summary.json`).
 
 ### Crucial Methodological Distinction
 This result proved **diagnostic validity**: Bayesian LoRA was not outputting random noise; parameter variance meaningfully reflected prediction difficulty.
@@ -156,10 +157,10 @@ The empirical results revealed a clear and consistent pattern across both develo
 
 | Dataset Period | Epistemic Error-Detection AUROC | Confidence Error-Detection AUROC | Epistemic Minus Confidence $\Delta\text{AUROC}$ | Seeds Epistemic $>$ Conf |
 |---|---|---|---|---|
-| **2022–2023 Development Diagnostic** | $0.5801$ | **$0.5968$** | **$-0.0167$** | $0 / 3$ seeds |
-| **2024–2025 Final Holdout** | $0.5898$ | **$0.5985$** | **$-0.0087$** | $0 / 3$ seeds |
+| **2022–2023 Development Diagnostic** | $0.5797$ | **$0.5973$** | **$-0.0175$** | $0 / 3$ seeds |
+| **2024–2025 Final Holdout** | $0.5909$ | **$0.5965$** | **$-0.0056$** | $0 / 3$ seeds |
 
-In both periods and across every random seed, **ordinary classifier confidence outperformed Bayesian epistemic variance** at detecting model errors.
+In both periods and across every random seed, **ordinary classifier confidence outperformed Bayesian epistemic variance** at detecting model errors (`results/earnings_bayesian_lora/uncertainty_control_summary.json`, `results/earnings_bayesian_lora_final_holdout/summary.json`).
 
 ### The Incremental Meta-Model
 To test whether combining both signals yielded incremental power, the study fit logistic error-prediction meta-models:
@@ -167,8 +168,8 @@ $$\text{Baseline: } \text{logit}(P(\text{error})) = \alpha_0 + \alpha_1 u_{\text
 $$\text{Augmented: } \text{logit}(P(\text{error})) = \gamma_0 + \gamma_1 u_{\text{conf}} + \gamma_2 \log(\sigma^2_{\text{epi}})$$
 
 The out-of-sample incremental metrics were:
-- **2022–2023 Development:** $\Delta\text{AUROC} = -0.0028 \pm 0.0050$, $\Delta\text{Log-Loss} = +0.0003$. Adding epistemic variance slightly degraded error detection (`results/earnings_bayesian_lora/incremental_epistemic_value.json`).
-- **2024–2025 Final Holdout:** $\Delta\text{AUROC} = +0.0003 \pm 0.0004$, $\Delta\text{Log-Loss} = -0.0001$. The epistemic term added essentially zero predictive power (`results/earnings_bayesian_lora_final_holdout/summary.json`).
+- **2022–2023 Development (Fit on 2022, Evaluated on 2023):** $\Delta\text{AUROC} = -0.0028 \pm 0.0050$, $\Delta\text{Log-Loss} = +0.0003 \pm 0.0003$. Adding epistemic variance slightly degraded error detection (`results/earnings_bayesian_lora/incremental_epistemic_value.json`).
+- **2024–2025 Final Holdout (Fit on 2022, Evaluated on 2024–2025):** $\Delta\text{AUROC} = +0.0003 \pm 0.0004$, $\Delta\text{Log-Loss} = -0.0004 \pm 0.0014$. The epistemic term added essentially zero predictive power (`results/earnings_bayesian_lora_final_holdout/summary.json`).
 
 This transformed the study's interpretation: Bayesian LoRA epistemic uncertainty was real, but ordinary deterministic confidence captured virtually all of the actionable error-detection information.
 
@@ -185,18 +186,19 @@ All allocation strategies were constrained to have **equal gross exposure** ($\s
 - **Epistemic-Adjusted:** $w_i \propto (1 - \bar{p}_i) \cdot (1 - F_{\text{dev}}(\sigma^2_{\text{epi}, i}))$, scaling by empirical reliability relative to the prior development distribution.
 
 ### The Initial Apparent Advantage
-In early unconstrained tests on the 2024–2025 holdout (`results/earnings_event_risk_allocation/summary.json`), epistemic sizing appeared superior:
+In early unconstrained tests on the 2024–2025 holdout (`results/earnings_event_risk_allocation/summary.json`), epistemic sizing appeared superior under Seed 42:
 - Posterior Mean Only Downside Event Rate: $25.71\%$
 - Confidence-Adjusted Downside Event Rate: $24.46\%$
-- Epistemic-Adjusted Downside Event Rate: **$22.62\%$** (a seemingly impressive $3.09$ percentage point reduction).
+- Epistemic-Adjusted Downside Event Rate: **$22.62\%$** (a seemingly impressive $3.09$ percentage point reduction vs posterior mean, and $-1.85$ pp vs confidence).
+Across all three seeds, the aggregate mean downside event rates were $25.68\%$ (posterior mean), $24.58\%$ (confidence), and $22.52\%$ (epistemic), representing a mean reduction of $-3.16$ percentage points vs posterior mean only and $-2.06$ percentage points vs confidence.
 
 ### The Concentration Discovery
 Closer inspection of portfolio structure revealed a critical confounder: **portfolio concentration**.
-The effective number of positions ($N_{\text{eff}}$, the inverse Herfindahl-Hirschman index) differed dramatically across rules:
+The effective number of positions ($N_{\text{eff}}$, the inverse Herfindahl-Hirschman index) differed dramatically across rules (values for Seed 42):
 $$N_{\text{eff}} = \frac{1}{\sum_{i=1}^N \left(\frac{w_i}{\sum w_k}\right)^2}$$
-- Posterior Mean Only $N_{\text{eff}} \approx 1,719$
-- Confidence-Adjusted $N_{\text{eff}} \approx 1,636$
-- Epistemic-Adjusted $N_{\text{eff}} \approx 1,306$
+- Posterior Mean Only $N_{\text{eff}} \approx 1,719$ ($1,719.2$ for Seed 42; 3-seed mean $1,719.1$)
+- Confidence-Adjusted $N_{\text{eff}} \approx 1,636$ ($1,636.4$ for Seed 42; 3-seed mean $1,633.2$)
+- Epistemic-Adjusted $N_{\text{eff}} \approx 1,306$ ($1,306.5$ for Seed 42; 3-seed mean $1,282.9$)
 
 Because the epistemic distribution had a heavy right tail, the epistemic reliability multiplier $(1 - F(\sigma^2_{\text{epi}}))$ drastically down-weighted many stocks, concentrating capital into a smaller subset of high-conviction positions. In a market where stock selection has positive average drift, a more concentrated portfolio naturally achieves a different risk profile.
 
@@ -206,10 +208,10 @@ Each rule's raw weights were adjusted by a power transformation:
 $$w_i(\gamma) = \text{normalize\_gross}(w_i^\gamma)$$
 Using bisection, $\gamma$ was solved to exactly match the target rule's $N_{\text{eff}}$ without using future price outcomes.
 
-The results dissolved the apparent epistemic advantage:
-- **In 2023 (Target $N_{\text{eff}} = 856.3$):** When confidence allocation was concentrated to match epistemic concentration, its downside event rate dropped from $22.66\%$ to **$20.01\%$**, outperforming epistemic sizing ($20.81\%$).
-- **In 2024–2025 Holdout (Target $N_{\text{eff}} = 1,306.5$):** Matched confidence achieved a downside event rate of **$21.75\%$**, beating epistemic sizing ($22.62\%$).
-- In **0 out of 3 seeds** did epistemic sizing beat matched confidence.
+The results dissolved the apparent epistemic advantage (`results/earnings_event_risk_allocation_concentration_control/summary.json`):
+- **In 2023 (Target $N_{\text{eff}} = 856.3$, Seed 42):** When confidence allocation was concentrated to match epistemic concentration, its downside event rate dropped from $22.66\%$ to **$20.01\%$**, outperforming epistemic sizing ($20.81\%$).
+- **In 2024–2025 Holdout (Target $N_{\text{eff}} = 1,306.5$, Seed 42):** Matched confidence achieved a downside event rate of **$22.51\%$**, beating epistemic sizing ($22.62\%$). Across all three seeds, epistemic sizing produced a $+0.19$ percentage point higher downside event rate on average than matched confidence ($0.2262$ vs $0.2243$).
+- In **0 out of 3 seeds** did epistemic sizing beat matched confidence in either period.
 
 The apparent economic superiority of Bayesian uncertainty was entirely an artifact of portfolio concentration.
 
@@ -245,21 +247,21 @@ The final scientific hypothesis was that epistemic uncertainty might become usef
    │
    ├── Strict Unseen Companies (Symbol absent from pre-2022 data)
    │     └── 2023: N=12 per seed (unstable, mixed)
-   │     └── 2024–2025: N=35 per seed (+0.0178 ΔAUROC hint; underpowered)
+   │     └── 2024–2025: N=35 per seed (meta-model +0.0178 ΔAUROC hint; underpowered)
    │
    ├── Sparse-History Companies (<= 4 pre-2022 earnings episodes)
-   │     └── 2023: N=20 per seed (negative, -0.0400 ΔAUROC)
-   │     └── 2024–2025: N=47 per seed (+0.0108 ΔAUROC hint; unstable)
+   │     └── 2023: N=20 per seed (negative, meta-model -0.0400 ΔAUROC)
+   │     └── 2024–2025: N=47 per seed (meta-model +0.0108 ΔAUROC hint; unstable)
    │
    └── Underrepresented Sectors (Pre-2022 sector count <= 25th percentile)
          └── Basic Materials, Communication Services, Energy
-         └── 2023: N=133 per seed (clear negative, -0.0156 ΔAUROC; 0/3 seeds beat conf)
-         └── 2024–2025: N=204 per seed (clear negative, -0.0034 ΔAUROC; 1/3 seeds beat conf)
+         └── 2023: N=133 per seed (clear negative, meta-model -0.0156 ΔAUROC; direct -0.0208 ΔAUROC)
+         └── 2024–2025: N=204 per seed (clear negative, meta-model -0.0034 ΔAUROC; direct -0.0206 ΔAUROC)
 ```
 
-1. **Strict Unseen Companies ($N=35$ in Holdout):** Evaluated companies never seen in training. A slight positive hint appeared in 2024–2025 ($\Delta\text{AUROC} \approx +0.0178$), but sample size was tiny ($N=35$, only 5 error events) and 2023 was mixed.
-2. **Sparse-History Companies ($N=47$ in Holdout):** Broadening the definition to companies with $\le 4$ prior episodes weakened the signal; 2023 was sharply negative ($\Delta\text{AUROC} = -0.0400$).
-3. **Underrepresented Sectors ($N=133$ in 2023, $N=204$ in Holdout):** The largest, most statistically powered shift subgroup (Energy, Basic Materials, Communication Services) produced a **clear negative result**. Epistemic error detection underperformed confidence in both periods ($\Delta\text{AUROC} = -0.0208$ in 2023; $-0.0206$ in holdout; $0/3$ seeds beating confidence).
+1. **Strict Unseen Companies ($N=35$ per seed in Holdout):** Evaluated companies never seen in training. A slight positive hint appeared in the incremental meta-model on 2024–2025 ($\Delta\text{AUROC}_{\text{meta}} \approx +0.0178$), but the sample size was tiny ($N=35$, only 5 error events) and 2023 was mixed (`results/earnings_unseen_company_shift/summary.json`).
+2. **Sparse-History Companies ($N=47$ per seed in Holdout):** Broadening the definition to companies with $\le 4$ prior episodes weakened the signal; the 2023 incremental meta-model was sharply negative ($\Delta\text{AUROC}_{\text{meta}} = -0.0400$) and 2024–2025 remained weak ($+0.0108$; `results/earnings_sparse_history_shift/summary.json`).
+3. **Underrepresented Sectors ($N=133$ in 2023, $N=204$ in Holdout, per seed):** The largest, most statistically powered shift subgroup (Energy, Basic Materials, Communication Services) produced a **clear negative result** (`results/earnings_underrepresented_sector_shift/summary.json`). Direct epistemic error detection underperformed confidence in both periods (direct $\Delta\text{AUROC} = -0.0208$ in 2023; $-0.0206$ in holdout; $0/3$ seeds beating confidence). Adding epistemic variance to the meta-model also degraded performance ($\Delta\text{AUROC}_{\text{meta}} = -0.0156$ in 2023, $-0.0034$ in holdout).
 
 Broader domain shift failed to rescue the epistemic advantage.
 
@@ -302,7 +304,7 @@ The finding is a **clean, controlled negative result**: in the context of S&P 50
 
 Once the scientific conclusions were locked, a comprehensive engineering effort hardened the repository into an immutable computational appendix:
 1. **Claims-to-Code Mapping ([`docs/claims_to_code_mapping.md`](file:///Users/xq/Documents/GitHub/bayesian-lora-portfolio-risk/docs/claims_to_code_mapping.md)):** Mapped every scientific claim in `README.md` and `docs/research_spec.md` to its exact script, function, and result artifact.
-2. **Pure Evaluation Extraction ([`src/.../uncertainty/evaluation.py`](file:///Users/xq/Documents/GitHub/bayesian-lora-portfolio-risk/src/bayesian_lora_portfolio_risk/uncertainty/evaluation.py)):** Decoupled monolithic scripts into tested library functions for confidence uncertainty, empirical CDFs, effective position counts, $\gamma$-bisection, allocation metrics, and subgroup partitioning.
+2. **Pure Evaluation Extraction ([`src/bayesian_lora_portfolio_risk/uncertainty/evaluation.py`](file:///Users/xq/Documents/GitHub/bayesian-lora-portfolio-risk/src/bayesian_lora_portfolio_risk/uncertainty/evaluation.py)):** Decoupled monolithic scripts into tested library functions within `bayesian_lora_portfolio_risk.uncertainty.evaluation` for confidence uncertainty, empirical CDFs, effective position counts, $\gamma$-bisection, allocation metrics, and subgroup partitioning.
 3. **Test Suite Expansion:** Expanded test coverage from 23 basic pilot tests to 50 comprehensive tests across 10 modules:
    - Variational parameter sampling, KL analytical divergence, and Bayesian LoRA attention injection (`tests/test_bayesian_lora.py`).
    - Temporal split disjointness and chronological causality invariants (`tests/test_leakage_and_invariants.py`).
@@ -356,7 +358,7 @@ Section 4.1 was added to [`docs/reproducibility.md`](file:///Users/xq/Documents/
 Mathematical stability tests were separated into [`tests/test_numerical_stability.py`](file:///Users/xq/Documents/GitHub/bayesian-lora-portfolio-risk/tests/test_numerical_stability.py) (verifying mathematical properties, boundary limits, and scale invariance), while [`tests/test_results_and_stability.py`](file:///Users/xq/Documents/GitHub/bayesian-lora-portfolio-risk/tests/test_results_and_stability.py) was explicitly documented as artifact snapshot invariants.
 
 ### FALSIFY-06: Zero-Score Allocation Fallback
-Added `fallback_equal=True` to `normalize_same_gross`, `compute_allocation_weights`, and `allocation_metrics` in `src/.../uncertainty/evaluation.py`. When an allocation rule produces all-zero raw scores (e.g., $p \equiv 0.5$ everywhere), the functions return uniform equal weights ($1.0$) rather than crashing. Added unit tests in `tests/test_evaluation_metrics.py`.
+Added `fallback_equal=True` to `normalize_same_gross`, `compute_allocation_weights`, and `allocation_metrics` in `src/bayesian_lora_portfolio_risk/uncertainty/evaluation.py`. When an allocation rule produces all-zero raw scores (e.g., $p \equiv 0.5$ everywhere), the functions return uniform equal weights ($1.0$) rather than crashing. Added unit tests in `tests/test_evaluation_metrics.py`.
 
 ---
 
